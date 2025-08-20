@@ -4,6 +4,8 @@ import React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/data-table";
 import type { CommercialRefinanceRow } from "@/types/applications";
+import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 const columns: ColumnDef<CommercialRefinanceRow, unknown>[] = [
   { accessorKey: "submissionTime", header: "Submitted" },
@@ -28,12 +30,9 @@ const columns: ColumnDef<CommercialRefinanceRow, unknown>[] = [
     cell: ({ row }) => {
       const id = row.original.id;
       return (
-        <a
-          href={`/applications/commercial_refinance/${id}`}
-          className="inline-block px-3 py-1 rounded bg-primary text-primary-foreground text-xs"
-        >
-          View
-        </a>
+        <Button asChild size="sm">
+          <Link href={`/applications/commercial_refinance/${id}`}>View</Link>
+        </Button>
       );
     },
   },
