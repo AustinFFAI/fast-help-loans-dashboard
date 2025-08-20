@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import type { CommercialAcquisitionResponse } from "@/types/api";
+import { transformCommercialAcquisition } from "@/lib/transformers";
+import { CommercialAcquisitionTable } from "@/components/tables/CommercialAcquisitionTable";
 
 export const metadata: Metadata = {
   title: "Commercial Acquisition Loans | Fast Help Loans",
@@ -23,9 +26,8 @@ export default async function CommercialAcquisitionPage() {
     throw new Error(`API responded with status: ${response.status}`);
   }
 
-  const applicationData = await response.json();
-
-  console.log({ applicationData });
+  const applicationData: CommercialAcquisitionResponse = await response.json();
+  const rows = transformCommercialAcquisition(applicationData);
 
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
@@ -35,6 +37,7 @@ export default async function CommercialAcquisitionPage() {
             Commercial Acquisition Applications
           </h1>
         </div>
+        <CommercialAcquisitionTable rows={rows} />
       </main>
     </div>
   );

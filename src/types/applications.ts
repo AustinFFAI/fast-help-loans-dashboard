@@ -28,35 +28,35 @@ export type ResidentialRefinanceRow = {
 // Commercial Acquisition — curated fields
 export type CommercialAcquisitionRow = {
   id: string | number; // required
-  submission_time: string | null;
+  submissionTime: string | null;
 
   // Client
-  client_full_name: string;
-  company_name: string | null;
-  phone_number: string | null;
+  clientFullName: string;
+  companyName: string | null;
+  phoneNumber: string | null;
   email: string | null;
 
   // Property
-  property_address: string;
-  property_type: string | null;
+  propertyAddress: string;
+  propertyType: string | null;
   units: number | null;
 
   // Loan & economics (display-ready)
-  purchase_price_or_property_value_display: string;
-  down_payment_display: string;
-  down_payment_pct_display: string; // percent
-  loan_amount_requested_display: string;
-  ltv_display: string; // percent
-  lien_position: string | null;
+  purchasePriceOrPropertyValueDisplay: string;
+  downPaymentDisplay: string;
+  downPaymentPctDisplay: string; // percent
+  loanAmountRequestedDisplay: string;
+  ltvDisplay: string; // percent
+  lienPosition: string | null;
 
   // Operations
-  occupancy_rate_display: string; // percent
-  annual_lease_rent_revenue_display: string;
-  projected_annual_lease_rent_revenue_display: string;
+  occupancyRateDisplay: string; // percent
+  annualLeaseRentRevenueDisplay: string;
+  projectedAnnualLeaseRentRevenueDisplay: string;
 
   // Status & key dates
-  is_under_contract: string | null;
-  close_of_escrow_date: string | null;
+  isUnderContract: string | null;
+  closeOfEscrowDate: string | null;
 };
 
 // Commercial Construction — curated fields
