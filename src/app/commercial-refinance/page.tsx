@@ -30,9 +30,12 @@ export default async function CommercialRefinancePage() {
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
       <main className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl sm:text-5xl font-bold tracking-tight mb-2">
+          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
             Commercial Refinance Applications
           </h1>
+          <p className="text-muted-foreground">
+            Compare refinance requests and evaluate loan metrics quickly.
+          </p>
         </div>
         <CommercialRefinanceTable rows={rows} />
       </main>

@@ -25,7 +25,6 @@ const columns: ColumnDef<CommercialRefinanceRow, unknown>[] = [
   { accessorKey: "interestRate1Display", header: "Rate #1" },
   {
     id: "action",
-    header: "Action",
     cell: ({ row }) => {
       const id = row.original.id;
       return (

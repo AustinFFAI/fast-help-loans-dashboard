@@ -33,7 +33,6 @@ const columns: ColumnDef<CommercialAcquisitionRow, unknown>[] = [
   { accessorKey: "closeOfEscrowDate", header: "COE" },
   {
     id: "action",
-    header: "Action",
     cell: ({ row }) => {
       const id = row.original.id;
       return (

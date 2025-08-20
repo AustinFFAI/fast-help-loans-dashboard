@@ -26,7 +26,6 @@ const columns: ColumnDef<CommercialConstructionRow, unknown>[] = [
   { accessorKey: "lienPosition", header: "Lien" },
   {
     id: "action",
-    header: "Action",
     cell: ({ row }) => {
       const id = row.original.id;
       return (
