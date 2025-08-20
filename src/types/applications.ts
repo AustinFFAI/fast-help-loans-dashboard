@@ -62,30 +62,30 @@ export type CommercialAcquisitionRow = {
 // Commercial Construction — curated fields
 export type CommercialConstructionRow = {
   id: string | number; // required
-  submission_time: string | null;
+  submissionTime: string | null;
 
   // Client
-  client_full_name: string;
-  company_name: string | null;
-  phone_number: string | null;
+  clientFullName: string;
+  companyName: string | null;
+  phoneNumber: string | null;
   email: string | null;
 
   // Property
-  property_address: string;
-  property_type: string | null;
+  propertyAddress: string;
+  propertyType: string | null;
   units: number | null;
 
   // Project & loan (display-ready)
-  type_of_construction: string | null;
-  purchase_price_or_property_value_display: string;
-  cost_of_construction_display: string;
-  construction_financed_amount_display: string;
-  after_repair_value_display: string;
-  ltc_display: string; // percent
-  ltarv_display: string; // percent
-  estimated_completion_time: string | null;
-  permit_status: string | null;
-  lien_position: string | null;
+  typeOfConstruction: string | null;
+  purchasePriceOrPropertyValueDisplay: string;
+  costOfConstructionDisplay: string;
+  constructionFinancedAmountDisplay: string;
+  afterRepairValueDisplay: string;
+  ltcDisplay: string; // percent
+  ltarvDisplay: string; // percent
+  estimatedCompletionTime: string | null;
+  permitStatus: string | null;
+  lienPosition: string | null;
 };
 
 // Commercial Refinance — curated fields

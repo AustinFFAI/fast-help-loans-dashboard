@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import type { CommercialConstructionResponse } from "@/types/api";
+import { transformCommercialConstruction } from "@/lib/transformers";
+import { CommercialConstructionTable } from "@/components/tables/CommercialConstructionTable";
 
 export const metadata: Metadata = {
   title: "Commercial Construction Loans | Fast Help Loans",
@@ -23,9 +26,8 @@ export default async function CommercialConstructionPage() {
     throw new Error(`API responded with status: ${response.status}`);
   }
 
-  const applicationData = await response.json();
-
-  console.log({ applicationData });
+  const applicationData: CommercialConstructionResponse = await response.json();
+  const rows = transformCommercialConstruction(applicationData);
 
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
@@ -35,6 +37,7 @@ export default async function CommercialConstructionPage() {
             Commercial Construction Applications
           </h1>
         </div>
+        <CommercialConstructionTable rows={rows} />
       </main>
     </div>
   );
