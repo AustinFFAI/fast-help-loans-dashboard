@@ -1,4 +1,7 @@
 import type { Metadata } from "next";
+import type { CommercialRefinanceResponse } from "@/types/api";
+import { transformCommercialRefinance } from "@/lib/transformers";
+import { CommercialRefinanceTable } from "@/components/tables/CommercialRefinanceTable";
 
 export const metadata: Metadata = {
   title: "Commercial Refinance Loans | Fast Help Loans",
@@ -20,9 +23,8 @@ export default async function CommercialRefinancePage() {
     throw new Error(`API responded with status: ${response.status}`);
   }
 
-  const applicationData = await response.json();
-
-  console.log({ applicationData });
+  const applicationData: CommercialRefinanceResponse = await response.json();
+  const rows = transformCommercialRefinance(applicationData);
 
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
@@ -32,6 +34,7 @@ export default async function CommercialRefinancePage() {
             Commercial Refinance Applications
           </h1>
         </div>
+        <CommercialRefinanceTable rows={rows} />
       </main>
     </div>
   );

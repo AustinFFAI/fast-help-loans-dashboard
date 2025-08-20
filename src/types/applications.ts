@@ -91,31 +91,31 @@ export type CommercialConstructionRow = {
 // Commercial Refinance — curated fields
 export type CommercialRefinanceRow = {
   id: string | number; // required
-  submission_time: string | null;
+  submissionTime: string | null;
 
   // Client
-  client_full_name: string;
-  company_name: string | null;
-  phone_number: string | null;
+  clientFullName: string;
+  companyName: string | null;
+  phoneNumber: string | null;
   email: string | null;
 
   // Property
-  property_address: string;
-  property_type: string | null;
-  occupancy_type: string | null;
+  propertyAddress: string;
+  propertyType: string | null;
+  occupancyType: string | null;
   units: number | null;
 
   // Loan (display-ready)
-  refinance_type: string | null;
-  property_value_display: string;
-  loan_amount_requested_display: string;
-  ltv_display: string; // percent
-  lien_position: string | null;
+  refinanceType: string | null;
+  propertyValueDisplay: string;
+  loanAmountRequestedDisplay: string;
+  ltvDisplay: string; // percent
+  lienPosition: string | null;
 
   // Existing financing snapshot (display-ready)
-  mortgage_balance_1_display: string | null;
-  monthly_payment_1_display: string | null;
-  interest_rate_1_display: string | null; // percent
+  mortgageBalance1Display: string | null;
+  monthlyPayment1Display: string | null;
+  interestRate1Display: string | null; // percent
 };
 
 // Residential Acquisition — curated fields
