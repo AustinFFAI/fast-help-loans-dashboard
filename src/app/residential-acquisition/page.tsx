@@ -42,7 +42,6 @@ export default async function ResidentialAcquisitionPage() {
         </div>
 
         <section className="mb-12">
-          <h2 className="text-2xl font-bold mb-4">Applications</h2>
           <ResidentialAcquisitionTable rows={rows} />
         </section>
       </main>
