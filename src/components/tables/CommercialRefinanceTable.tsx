@@ -2,7 +2,7 @@
 
 import React from "react";
 import type { ColumnDef } from "@tanstack/react-table";
-import { DataTable } from "@/components/data-table";
+import { DataTable } from "@/components/ui/data-table";
 import type { CommercialRefinanceRow } from "@/types/applications";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
