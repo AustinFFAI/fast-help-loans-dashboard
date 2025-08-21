@@ -120,3 +120,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Theme overrides */
+:root {
+	--primary: #017DAB;
+	--primary-foreground: oklch(0.985 0 0);
+}
+.dark {
+	--primary: #017DAB;
+	--primary-foreground: oklch(0.985 0 0);
+}
