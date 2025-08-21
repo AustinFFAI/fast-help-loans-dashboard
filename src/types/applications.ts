@@ -5,24 +5,24 @@
 export type ResidentialRefinanceRow = {
   // Meta
   id: string | number; // required
-  submission_time: string | null; // optional per updated model note
+  submissionTime: string | null; // optional per updated model note
 
   // Client
-  client_full_name: string; // derived from first_name + last_name
-  phone_number: string | null;
+  clientFullName: string; // derived from first_name + last_name
+  phoneNumber: string | null;
   email: string | null;
 
   // Property
-  property_address: string; // combined address, city, state, zip
-  property_type: string | null;
-  occupancy_type: string | null;
+  propertyAddress: string; // combined address, city, state, zip
+  propertyType: string | null;
+  occupancyType: string | null;
 
   // Loan (display-ready values preformatted on the server)
-  refinance_type: string | null;
-  property_value_display: string; // formatted from property_value
-  loan_amount_requested_display: string; // formatted from loan_amount_requested
-  ltv_display: string; // formatted percent
-  lien_position: string | null;
+  refinanceType: string | null;
+  propertyValueDisplay: string; // formatted from property_value
+  loanAmountRequestedDisplay: string; // formatted from loan_amount_requested
+  ltvDisplay: string; // formatted percent
+  lienPosition: string | null;
 };
 
 // Commercial Acquisition — curated fields
