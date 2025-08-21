@@ -121,29 +121,29 @@ export type CommercialRefinanceRow = {
 // Residential Acquisition — curated fields
 export type ResidentialAcquisitionRow = {
   id: string | number; // required
-  submission_time: string | null;
+  submissionTime: string | null;
 
   // Client
-  client_full_name: string;
-  phone_number: string | null;
+  clientFullName: string;
+  phoneNumber: string | null;
   email: string | null;
 
   // Property
-  property_address: string;
-  property_type: string | null;
-  occupancy_type: string | null;
+  propertyAddress: string;
+  propertyType: string | null;
+  occupancyType: string | null;
 
   // Financing (display-ready)
-  purchase_price_display: string;
-  down_payment_display: string;
-  down_payment_pct_display: string; // percent
-  loan_amount_requested_display: string | null; // if applicable
-  ltv_display: string | null; // percent
-  lien_position: string | null;
+  purchasePriceDisplay: string;
+  downPaymentDisplay: string;
+  downPaymentPctDisplay: string; // percent
+  loanAmountRequestedDisplay: string | null; // if applicable
+  ltvDisplay: string | null; // percent
+  lienPosition: string | null;
 
   // Status
-  is_under_contract: string | null;
-  close_of_escrow_date: string | null;
+  isUnderContract: string | null;
+  closeOfEscrowDate: string | null;
 };
 
 // Residential Construction — curated fields
