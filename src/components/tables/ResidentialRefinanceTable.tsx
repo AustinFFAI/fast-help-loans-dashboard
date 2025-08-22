@@ -26,7 +26,7 @@ const columns: ColumnDef<ResidentialRefinanceRow, unknown>[] = [
       const id = row.original.id;
       return (
         <Button asChild size="sm">
-          <Link href={`/applications/residential_refinance/${id}`}>View</Link>
+          <Link href={`/applications/residential-refinance/${id}`}>View</Link>
         </Button>
       );
     },
