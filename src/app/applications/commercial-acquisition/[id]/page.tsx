@@ -3,6 +3,14 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "@/components/ui/breadcrumb";
 import type { CommercialAcquisitionApi } from "@/types/api";
 import { ArrowLeftToLine } from "lucide-react";
 
@@ -60,16 +68,21 @@ export default async function CommercialAcquisitionDetailPage({
   return (
     <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
       <main className="max-w-5xl mx-auto">
-        <nav className="mb-6 text-sm text-muted-foreground overflow-x-auto whitespace-nowrap">
-          <Link
-            href="/applications/commercial-acquisition"
-            className="hover:underline"
-          >
-            Commercial Acquisition
-          </Link>
-          <span className="mx-2">/</span>
-          <span className="text-foreground">#{record.id}</span>
-        </nav>
+        <Breadcrumb className="mb-6">
+          <BreadcrumbList>
+            <BreadcrumbItem>
+              <BreadcrumbLink asChild>
+                <Link href="/applications/commercial-acquisition">
+                  Commercial Acquisition
+                </Link>
+              </BreadcrumbLink>
+            </BreadcrumbItem>
+            <BreadcrumbSeparator />
+            <BreadcrumbItem>
+              <BreadcrumbPage>#{record.id}</BreadcrumbPage>
+            </BreadcrumbItem>
+          </BreadcrumbList>
+        </Breadcrumb>
 
         <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between gap-4 mb-8">
           <div className="min-w-0">
