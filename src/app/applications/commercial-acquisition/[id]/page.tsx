@@ -12,6 +12,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import type { CommercialAcquisitionApi } from "@/types/api";
+import { createApplicationFetcher } from "@/lib/fetchApplication";
+import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
 
 type PageProps = {
@@ -22,26 +24,9 @@ export const metadata: Metadata = {
   title: "Commercial Acquisition | Application Details",
 };
 
-async function fetchApplication(id: string) {
-  const API_URL = process.env.API_URL;
-  const res = await fetch(
-    `${API_URL}/applications/commercial_acquisition/${id}`,
-    {
-      headers: { "x-fillout-secret": process.env.X_FILLOUT_SECRET || "" },
-      cache: "no-store",
-    }
-  );
-
-  if (res.status === 404) return null;
-
-  if (!res.ok) throw new Error(`API responded with status: ${res.status}`);
-
-  const data: CommercialAcquisitionApi | CommercialAcquisitionApi[] =
-    await res.json();
-  // Support either a single object or array responses
-  const record = Array.isArray(data) ? data[0] : data;
-  return record ?? null;
-}
+const fetchApplication = createApplicationFetcher<CommercialAcquisitionApi>(
+  ApplicationTypeEndpoints.CommercialAcquisition
+);
 
 export default async function CommercialAcquisitionDetailPage({
   params,

@@ -12,6 +12,8 @@ import {
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
 import type { CommercialRefinanceApi } from "@/types/api";
+import { createApplicationFetcher } from "@/lib/fetchApplication";
+import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
 
 type PageProps = {
@@ -22,24 +24,9 @@ export const metadata: Metadata = {
   title: "Commercial Refinance | Application Details",
 };
 
-async function fetchApplication(id: string) {
-  const API_URL = process.env.API_URL;
-  const res = await fetch(
-    `${API_URL}/applications/commercial_refinance/${id}`,
-    {
-      headers: { "x-fillout-secret": process.env.X_FILLOUT_SECRET || "" },
-      cache: "no-store",
-    }
-  );
-
-  if (res.status === 404) return null;
-  if (!res.ok) throw new Error(`API responded with status: ${res.status}`);
-
-  const data: CommercialRefinanceApi | CommercialRefinanceApi[] =
-    await res.json();
-  const record = Array.isArray(data) ? data[0] : data;
-  return record ?? null;
-}
+const fetchApplication = createApplicationFetcher<CommercialRefinanceApi>(
+  ApplicationTypeEndpoints.CommercialRefinance
+);
 
 export default async function CommercialRefinanceDetailPage({
   params,
