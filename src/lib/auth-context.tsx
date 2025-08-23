@@ -51,6 +51,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setLoading(false);
         return;
       }
+
+      console.log({ firebaseUser });
       try {
         // Try to fetch backend user; if not provisioned, provision now
         let me = null as BackendUser | null;
