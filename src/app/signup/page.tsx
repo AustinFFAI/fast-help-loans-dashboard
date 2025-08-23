@@ -2,15 +2,14 @@
 
 import { SignupForm } from "@/components/signup-form";
 import RedirectIfAuthed from "@/components/redirect-if-authed";
+import AuthLayout from "@/components/layouts/auth-layout";
 
 export default function Page() {
   return (
     <RedirectIfAuthed>
-      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-        <div className="w-full max-w-sm">
-          <SignupForm />
-        </div>
-      </div>
+      <AuthLayout>
+        <SignupForm />
+      </AuthLayout>
     </RedirectIfAuthed>
   );
 }

@@ -1,16 +1,13 @@
-"use client";
-
 import { LoginForm } from "@/components/login-form";
 import RedirectIfAuthed from "@/components/redirect-if-authed";
+import AuthLayout from "@/components/layouts/auth-layout";
 
-export default function Page() {
+export default function LoginPage() {
   return (
     <RedirectIfAuthed>
-      <div className="flex min-h-svh w-full items-center justify-center p-6 md:p-10">
-        <div className="w-full max-w-sm">
-          <LoginForm />
-        </div>
-      </div>
+      <AuthLayout>
+        <LoginForm />
+      </AuthLayout>
     </RedirectIfAuthed>
   );
 }
