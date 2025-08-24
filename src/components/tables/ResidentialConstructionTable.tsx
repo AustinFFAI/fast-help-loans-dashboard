@@ -29,7 +29,7 @@ const columns: ColumnDef<ResidentialConstructionRow, unknown>[] = [
       const id = row.original.id;
       return (
         <Button asChild size="sm">
-          <Link href={`/applications/residential_construction/${id}`}>
+          <Link href={`/applications/residential-construction/${id}`}>
             View
           </Link>
         </Button>
