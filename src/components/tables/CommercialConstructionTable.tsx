@@ -32,7 +32,7 @@ const columns: ColumnDef<CommercialConstructionRow, unknown>[] = [
       const id = row.original.id;
       return (
         <Button asChild size="sm">
-          <Link href={`/applications/commercial_construction/${id}`}>View</Link>
+          <Link href={`/applications/commercial-construction/${id}`}>View</Link>
         </Button>
       );
     },

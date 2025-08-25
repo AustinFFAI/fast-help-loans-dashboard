@@ -31,7 +31,7 @@ const columns: ColumnDef<CommercialRefinanceRow, unknown>[] = [
       const id = row.original.id;
       return (
         <Button asChild size="sm">
-          <Link href={`/applications/commercial_refinance/${id}`}>View</Link>
+          <Link href={`/applications/commercial-refinance/${id}`}>View</Link>
         </Button>
       );
     },
