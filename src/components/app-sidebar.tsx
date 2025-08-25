@@ -16,7 +16,14 @@ import {
 import Link from "next/link";
 import { ApplicationRoutes } from "@/enums/applicationRoutesEnum";
 import type { LucideIcon } from "lucide-react";
-import { Building2, Wrench, Banknote, Home, Hammer } from "lucide-react";
+import {
+  Building2,
+  Wrench,
+  Banknote,
+  Home,
+  Hammer,
+  LayoutDashboard,
+} from "lucide-react";
 import { NavUser } from "./nav-user";
 
 type AppLink = { href: ApplicationRoutes; label: string; icon: LucideIcon };
@@ -74,6 +81,21 @@ export function AppSidebar() {
         </h1>
       </SidebarHeader>
       <SidebarContent>
+        <SidebarGroup>
+          <SidebarGroupLabel>General</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href={ApplicationRoutes.Dashboard}>
+                    <LayoutDashboard />
+                    <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
         <SidebarGroup>
           <SidebarGroupLabel>Applications</SidebarGroupLabel>
           <SidebarGroupContent>
