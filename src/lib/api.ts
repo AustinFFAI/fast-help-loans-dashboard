@@ -9,6 +9,30 @@ export type BackendUser = {
   lender_id: number | null;
 };
 
+export type LenderProfile = {
+  id: number;
+  lender_name: string | null;
+  contact_email: string | null;
+  lending_states: string[];
+  property_types: string[];
+  loan_min: number | null;
+  loan_max: number | null;
+  max_ltv: number | null;
+  company_name: string | null;
+  contact_name: string | null;
+  contact_phone: string | null;
+};
+
+export type LenderProfileUpdate = {
+  lender_name?: string;
+  contact_email?: string;
+  lending_states?: string[];
+  property_types?: string[];
+  loan_min?: number;
+  loan_max?: number;
+  max_ltv?: number;
+};
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getIdToken(currentUser: FirebaseUser): Promise<string> {
@@ -57,6 +81,32 @@ export async function getMe(currentUser: FirebaseUser): Promise<BackendUser> {
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Get me failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function getLenderProfile(
+  currentUser: FirebaseUser,
+): Promise<LenderProfile> {
+  const res = await authorizedFetch(currentUser, "/lenders/profile");
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Get lender profile failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateLenderProfile(
+  currentUser: FirebaseUser,
+  profileData: LenderProfileUpdate,
+): Promise<{ message: string; lender: LenderProfile }> {
+  const res = await authorizedFetch(currentUser, "/lenders/profile", {
+    method: "PATCH",
+    body: JSON.stringify(profileData),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Update lender profile failed: ${res.status}`);
   }
   return res.json();
 }

@@ -24,7 +24,12 @@ type AuthContextValue = {
   backendUser: BackendUser | null;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signInWithGoogle: () => Promise<void>;
-  signUpWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ) => Promise<void>;
   signOutUser: () => Promise<void>;
 };
 
@@ -94,13 +99,21 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setBackendUser(me);
         }
       },
-      async signUpWithEmail(email: string, password: string) {
+      async signUpWithEmail(
+        email: string,
+        password: string,
+        firstName: string,
+        lastName: string,
+      ) {
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
           password,
         );
-        const me = await provisionUser(cred.user);
+        const me = await provisionUser(cred.user, {
+          contact_name: `${firstName} ${lastName}`,
+          contact_email: email,
+        });
         setBackendUser(me);
       },
       async signOutUser() {
