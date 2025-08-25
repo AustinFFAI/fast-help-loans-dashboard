@@ -97,7 +97,7 @@ export function AppSidebar() {
           </SidebarGroupContent>
         </SidebarGroup>
         <SidebarGroup>
-          <SidebarGroupLabel>Applications</SidebarGroupLabel>
+          <SidebarGroupLabel>Loan Applications</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {applicationSections.map((section) => (
