@@ -111,6 +111,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           password,
         );
         const me = await provisionUser(cred.user, {
+          given_name: firstName,
+          family_name: lastName,
           contact_name: `${firstName} ${lastName}`,
           contact_email: email,
         });

@@ -60,6 +60,8 @@ export async function authorizedFetch(
 export async function provisionUser(
   currentUser: FirebaseUser,
   body?: Partial<{
+    given_name: string;
+    family_name: string;
     lender_name: string;
     contact_name: string;
     contact_email: string;
