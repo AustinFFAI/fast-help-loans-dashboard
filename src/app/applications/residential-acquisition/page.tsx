@@ -30,21 +30,17 @@ export default async function ResidentialAcquisitionPage() {
   const rows = transformResidentialAcquisition(applicationData);
 
   return (
-    <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
-      <main className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-            Residential Acquisition Applications
-          </h1>
-          <p className="text-muted-foreground">
-            Review residential purchase submissions, terms, and status.
-          </p>
-        </div>
+    <main className="w-full">
+      <div className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
+          Residential Acquisition Applications
+        </h1>
+        <p className="text-muted-foreground">
+          Review residential purchase submissions, terms, and status.
+        </p>
+      </div>
 
-        <section className="mb-12">
-          <ResidentialAcquisitionTable rows={rows} />
-        </section>
-      </main>
-    </div>
+      <ResidentialAcquisitionTable rows={rows} />
+    </main>
   );
 }

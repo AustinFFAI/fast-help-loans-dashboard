@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import {
+  SidebarInset,
+  SidebarProvider,
+  SidebarTrigger,
+} from "@/components/ui/sidebar";
+import { AppSidebar } from "@/components/app-sidebar";
 import { AuthProvider } from "@/lib/auth-context";
 
 const geistSans = Geist({
@@ -28,7 +34,15 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <AuthProvider>{children}</AuthProvider>
+        <SidebarProvider>
+          <AppSidebar />
+          <SidebarInset className="min-w-0">
+            <header className="flex h-14 shrink-0 items-center gap-2 px-4 sticky top-0 z-10 bg-background supports-[backdrop-filter]:bg-background/80 backdrop-blur">
+              <SidebarTrigger className="-ml-1" />
+            </header>
+            <AuthProvider>{children}</AuthProvider>
+          </SidebarInset>
+        </SidebarProvider>
       </body>
     </html>
   );

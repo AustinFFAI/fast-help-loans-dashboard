@@ -30,18 +30,16 @@ export default async function CommercialAcquisitionPage() {
   const rows = transformCommercialAcquisition(applicationData);
 
   return (
-    <div className="min-h-screen p-8 pb-20 gap-16 sm:p-20 font-sans">
-      <main className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
-            Commercial Acquisition Applications
-          </h1>
-          <p className="text-muted-foreground">
-            Review acquisition submissions, key terms, and status at a glance.
-          </p>
-        </div>
-        <CommercialAcquisitionTable rows={rows} />
-      </main>
-    </div>
+    <main className="w-full">
+      <div className="mb-8">
+        <h1 className="text-3xl sm:text-4xl font-bold tracking-tight mb-2">
+          Commercial Acquisition Applications
+        </h1>
+        <p className="text-muted-foreground">
+          Review acquisition submissions, key terms, and status at a glance.
+        </p>
+      </div>
+      <CommercialAcquisitionTable rows={rows} />
+    </main>
   );
 }
