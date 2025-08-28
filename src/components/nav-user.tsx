@@ -20,17 +20,21 @@ import {
   useSidebar,
 } from "@/components/ui/sidebar";
 
-export function NavUser({
-  user,
-}: {
-  user: {
-    name: string;
-    email: string;
-    avatar: string;
-  };
-}) {
+export function NavUser() {
   const { isMobile } = useSidebar();
-  const { signOutUser } = useAuth();
+  const { user: firebaseUser, backendUser, signOutUser } = useAuth();
+
+  const email = firebaseUser?.email || backendUser?.email || "";
+  const fallbackNameFromEmail = email ? email.split("@")[0] : undefined;
+  const displayName =
+    firebaseUser?.displayName || fallbackNameFromEmail || "User";
+  const avatar = firebaseUser?.photoURL || "";
+  const initials = (displayName || "U")
+    .split(" ")
+    .map((s: string) => s[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
 
   return (
     <SidebarMenu>
@@ -42,12 +46,14 @@ export function NavUser({
               className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground"
             >
               <Avatar className="h-8 w-8 rounded-lg">
-                <AvatarImage src={user.avatar} alt={user.name} />
-                <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                <AvatarImage src={avatar} alt={displayName} />
+                <AvatarFallback className="rounded-lg bg-muted/80 text-foreground">
+                  {initials}
+                </AvatarFallback>
               </Avatar>
               <div className="grid flex-1 text-left text-sm leading-tight">
-                <span className="truncate font-medium">{user.name}</span>
-                <span className="truncate text-xs">{user.email}</span>
+                <span className="truncate font-medium">{displayName}</span>
+                <span className="truncate text-xs">{email}</span>
               </div>
               <ChevronsUpDown className="ml-auto size-4" />
             </SidebarMenuButton>
@@ -61,12 +67,14 @@ export function NavUser({
             <DropdownMenuLabel className="p-0 font-normal">
               <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
                 <Avatar className="h-8 w-8 rounded-lg">
-                  <AvatarImage src={user.avatar} alt={user.name} />
-                  <AvatarFallback className="rounded-lg">CN</AvatarFallback>
+                  <AvatarImage src={avatar} alt={displayName} />
+                  <AvatarFallback className="rounded-lg bg-muted/80 text-foreground">
+                    {initials}
+                  </AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">{user.name}</span>
-                  <span className="truncate text-xs">{user.email}</span>
+                  <span className="truncate font-medium">{displayName}</span>
+                  <span className="truncate text-xs">{email}</span>
                 </div>
               </div>
             </DropdownMenuLabel>
