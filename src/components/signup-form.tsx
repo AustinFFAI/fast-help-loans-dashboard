@@ -14,6 +14,8 @@ export function SignupForm({
 }: React.ComponentProps<"form">) {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -24,8 +26,8 @@ export function SignupForm({
     setError(null);
     setSubmitting(true);
     try {
-      await signUpWithEmail(email, password);
-      router.push("/");
+      await signUpWithEmail(email, password, firstName, lastName);
+      router.push("/lender-profile");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
     } finally {
@@ -38,7 +40,7 @@ export function SignupForm({
     setSubmitting(true);
     try {
       await signInWithGoogle();
-      router.push("/");
+      router.push("/lender-profile");
     } catch (err: unknown) {
       setError(
         err instanceof Error ? err.message : "Failed to sign in with Google",
@@ -61,6 +63,30 @@ export function SignupForm({
         </p>
       </div>
       <div className="grid gap-6">
+        <div className="grid grid-cols-2 gap-3">
+          <div className="grid gap-3">
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              type="text"
+              placeholder="John"
+              required
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+          </div>
+          <div className="grid gap-3">
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              type="text"
+              placeholder="Doe"
+              required
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </div>
+        </div>
         <div className="grid gap-3">
           <Label htmlFor="email">Email</Label>
           <Input
