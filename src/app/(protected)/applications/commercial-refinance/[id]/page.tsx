@@ -157,12 +157,6 @@ export default async function CommercialRefinanceDetailPage({
                     {record.occupancy_type ?? "-"}
                   </div>
                 </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Units</div>
-                  <div className="text-sm font-medium">
-                    {record.units ?? "-"}
-                  </div>
-                </div>
               </div>
             </CardContent>
           </Card>

@@ -45,14 +45,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
-      setUser(firebaseUser);
       if (!firebaseUser) {
         setBackendUser(null);
         setLoading(false);
         return;
       }
 
-      console.log({ firebaseUser });
+      setUser(firebaseUser);
+
       try {
         // Try to fetch backend user; if not provisioned, provision now
         let me = null as BackendUser | null;
@@ -98,7 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
-          password,
+          password
         );
         const me = await provisionUser(cred.user);
         setBackendUser(me);
@@ -108,7 +108,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setBackendUser(null);
       },
     }),
-    [user, loading, backendUser],
+    [user, loading, backendUser]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
