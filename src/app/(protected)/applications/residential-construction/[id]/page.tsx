@@ -204,6 +204,14 @@ export default async function ResidentialConstructionDetailPage({
                   </div>
                 </div>
                 <div>
+                  <div className="text-xs text-muted-foreground">
+                    After Repair Value (ARV)
+                  </div>
+                  <div className="text-sm font-medium">
+                    {String(record.after_repair_value ?? "-")}
+                  </div>
+                </div>
+                <div>
                   <div className="text-xs text-muted-foreground">LTC</div>
                   <div className="text-sm font-medium">
                     {String(record.ltc ?? "-")}
