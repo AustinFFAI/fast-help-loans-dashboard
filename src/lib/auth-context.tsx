@@ -14,6 +14,10 @@ import {
   signInWithEmailAndPassword,
   signInWithPopup,
   createUserWithEmailAndPassword,
+  sendPasswordResetEmail,
+  confirmPasswordReset as firebaseConfirmPasswordReset,
+  validatePassword,
+  verifyPasswordResetCode,
 } from "firebase/auth";
 import { auth, googleProvider } from "./firebase";
 import { BackendUser, getMe, provisionUser } from "./api";
@@ -31,6 +35,8 @@ type AuthContextValue = {
     lastName: string,
   ) => Promise<void>;
   signOutUser: () => Promise<void>;
+  requestPasswordReset: (email: string) => Promise<void>;
+  confirmPasswordReset: (oobCode: string, newPassword: string) => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -105,6 +111,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         firstName: string,
         lastName: string,
       ) {
+        // Validate password against Firebase project's password policy
+        const status = await validatePassword(auth, password);
+        if (!status.isValid) {
+          const unmet: string[] = [];
+          if (status.meetsMinPasswordLength === false)
+            unmet.push("minimum length");
+          if (status.meetsMaxPasswordLength === false)
+            unmet.push("maximum length");
+          if (status.containsLowercaseLetter === false)
+            unmet.push("lowercase letter");
+          if (status.containsUppercaseLetter === false)
+            unmet.push("uppercase letter");
+          if (status.containsNumericCharacter === false) unmet.push("number");
+          if (status.containsNonAlphanumericCharacter === false)
+            unmet.push("symbol");
+
+          const msg =
+            unmet.length > 0
+              ? `Password does not meet requirements: ${unmet.join(", ")}.`
+              : "Password does not meet the project's password policy.";
+          throw new Error(msg);
+        }
+
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -121,6 +150,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       async signOutUser() {
         await signOut(auth);
         setBackendUser(null);
+      },
+      async requestPasswordReset(email: string) {
+        await sendPasswordResetEmail(auth, email);
+      },
+      async confirmPasswordReset(oobCode: string, newPassword: string) {
+        await verifyPasswordResetCode(auth, oobCode);
+        await firebaseConfirmPasswordReset(auth, oobCode, newPassword);
       },
     }),
     [user, loading, backendUser],
