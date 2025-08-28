@@ -105,6 +105,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       },
       async signOutUser() {
         await signOut(auth);
+        setUser(null);
         setBackendUser(null);
       },
     }),
