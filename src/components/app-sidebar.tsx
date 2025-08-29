@@ -129,13 +129,7 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
       <SidebarFooter>
-        <NavUser
-          user={{
-            name: "John Doe",
-            email: "john.doe@example.com",
-            avatar: "https://i.pravatar.cc/64?img=1",
-          }}
-        />
+        <NavUser />
       </SidebarFooter>
     </Sidebar>
   );
