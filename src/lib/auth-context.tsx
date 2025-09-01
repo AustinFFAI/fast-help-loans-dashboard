@@ -15,7 +15,7 @@ import {
   signInWithPopup,
   createUserWithEmailAndPassword,
 } from "firebase/auth";
-import { auth, googleProvider } from "./firebase";
+import { getFirebaseAuth, getGoogleProvider } from "./firebase";
 import { BackendUser, getMe, provisionUser } from "./api";
 
 type AuthContextValue = {
@@ -28,7 +28,7 @@ type AuthContextValue = {
     email: string,
     password: string,
     firstName: string,
-    lastName: string,
+    lastName: string
   ) => Promise<void>;
   signOutUser: () => Promise<void>;
 };
@@ -49,6 +49,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [backendUser, setBackendUser] = useState<BackendUser | null>(null);
 
   useEffect(() => {
+    const auth = getFirebaseAuth();
+    if (!auth) {
+      setBackendUser(null);
+      setLoading(false);
+      return;
+    }
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
         setBackendUser(null);
@@ -80,6 +86,9 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       backendUser,
       async signInWithEmail(email: string, password: string) {
+        const auth = getFirebaseAuth();
+        if (!auth)
+          throw new Error("Auth is not available in this environment.");
         const cred = await signInWithEmailAndPassword(auth, email, password);
         try {
           const me = await getMe(cred.user);
@@ -90,6 +99,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         }
       },
       async signInWithGoogle() {
+        const auth = getFirebaseAuth();
+        const googleProvider = getGoogleProvider();
+        if (!auth || !googleProvider)
+          throw new Error("Auth/Google provider is not available.");
         const cred = await signInWithPopup(auth, googleProvider);
         try {
           const me = await getMe(cred.user);
@@ -103,8 +116,11 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         email: string,
         password: string,
         firstName: string,
-        lastName: string,
+        lastName: string
       ) {
+        const auth = getFirebaseAuth();
+        if (!auth)
+          throw new Error("Auth is not available in this environment.");
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
@@ -119,6 +135,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setBackendUser(me);
       },
       async signOutUser() {
+        const auth = getFirebaseAuth();
+        if (!auth) return;
         await signOut(auth);
         setUser(null);
         setBackendUser(null);

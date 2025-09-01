@@ -17,11 +17,37 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
-export const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
+let appInstance: ReturnType<typeof getApp> | undefined;
+let authInstance: ReturnType<typeof getAuth> | undefined;
+let googleProviderInstance: GoogleAuthProvider | undefined;
 
-export const auth = getAuth(app);
-export const googleProvider = new GoogleAuthProvider();
+function ensureClient(): boolean {
+  return typeof window !== "undefined";
+}
 
-if (typeof window !== "undefined") {
-  setPersistence(auth, browserLocalPersistence).catch(() => {});
+export function getFirebaseApp() {
+  if (!ensureClient()) return undefined;
+  if (!appInstance) {
+    appInstance = getApps().length ? getApp() : initializeApp(firebaseConfig);
+  }
+  return appInstance;
+}
+
+export function getFirebaseAuth() {
+  if (!ensureClient()) return undefined;
+  if (!authInstance) {
+    const app = getFirebaseApp();
+    if (!app) return undefined;
+    authInstance = getAuth(app);
+    setPersistence(authInstance, browserLocalPersistence).catch(() => {});
+  }
+  return authInstance;
+}
+
+export function getGoogleProvider() {
+  if (!ensureClient()) return undefined;
+  if (!googleProviderInstance) {
+    googleProviderInstance = new GoogleAuthProvider();
+  }
+  return googleProviderInstance;
 }
