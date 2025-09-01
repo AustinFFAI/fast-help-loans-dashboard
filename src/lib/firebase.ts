@@ -17,6 +17,8 @@ const firebaseConfig = {
   appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID!,
 };
 
+console.log({ firebaseConfig });
+
 let appInstance: ReturnType<typeof getApp> | undefined;
 let authInstance: ReturnType<typeof getAuth> | undefined;
 let googleProviderInstance: GoogleAuthProvider | undefined;
