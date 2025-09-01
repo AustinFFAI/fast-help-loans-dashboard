@@ -16,7 +16,7 @@ import { createApplicationFetcher } from "@/lib/fetchApplication";
 import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
 
-type PageProps = { params: { id: string } };
+type PageProps = { params: Promise<{ id: string }> };
 
 export const metadata: Metadata = {
   title: "Residential Construction | Application Details",
@@ -29,7 +29,8 @@ const fetchApplication = createApplicationFetcher<ResidentialConstructionApi>(
 export default async function ResidentialConstructionDetailPage({
   params,
 }: PageProps) {
-  const record = await fetchApplication(params.id);
+  const { id } = await params;
+  const record = await fetchApplication(id);
   if (!record) notFound();
 
   const clientFullName = [
