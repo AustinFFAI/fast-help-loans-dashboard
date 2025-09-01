@@ -17,7 +17,7 @@ import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
 
 type PageProps = {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 };
 
 export const metadata: Metadata = {
@@ -31,7 +31,8 @@ const fetchApplication = createApplicationFetcher<CommercialConstructionApi>(
 export default async function CommercialConstructionDetailPage({
   params,
 }: PageProps) {
-  const record = await fetchApplication(params.id);
+  const { id } = await params;
+  const record = await fetchApplication(id);
 
   if (!record) notFound();
 
