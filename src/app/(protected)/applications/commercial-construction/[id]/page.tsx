@@ -298,9 +298,12 @@ export default async function CommercialConstructionDetailPage({
 
         {/* Matching Lenders Section */}
         <div>
-          <h2 className="text-lg font-semibold tracking-tight mb-4">
+          <h2 className="text-lg font-semibold tracking-tight mb-2">
             Matching Lenders
           </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Lenders that match the criteria for this application based on loan amount, property type, location, and other requirements.
+          </p>
           <MatchingLendersTable rows={matchingLenders} />
         </div>
       </div>
