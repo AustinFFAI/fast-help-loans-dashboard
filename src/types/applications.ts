@@ -171,3 +171,25 @@ export type ResidentialConstructionRow = {
   permitStatus: string | null;
   lienPosition: string | null;
 };
+
+// Matching Lender — display-ready row type for table
+export type MatchingLenderRow = {
+  id: number;
+  lenderName: string;
+  companyName: string;
+  contactName: string;
+  contactPhone: string;
+  contactEmail: string;
+  
+  // Loan terms (display-ready)
+  loanRangeDisplay: string; // "Loan Min - Loan Max" formatted
+  maxLtvDisplay: string; // formatted percent
+  ficoMinDisplay: string; // formatted number
+  
+  // Coverage
+  lendingStates: string[]; // parsed from comma-separated string
+  propertyTypes: string[]; // parsed from comma-separated string
+  
+  // Additional info
+  notes: string;
+};
