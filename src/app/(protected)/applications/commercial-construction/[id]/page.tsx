@@ -1,20 +1,23 @@
-import type { Metadata } from "next";
-import { notFound } from "next/navigation";
-import Link from "next/link";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
+import { MatchingLendersTable } from "@/components/tables/MatchingLendersTable";
 import { Badge } from "@/components/ui/badge";
 import {
   Breadcrumb,
-  BreadcrumbList,
   BreadcrumbItem,
   BreadcrumbLink,
+  BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
 } from "@/components/ui/breadcrumb";
-import type { CommercialConstructionApi } from "@/types/api";
-import { createApplicationFetcher } from "@/lib/fetchApplication";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
+import { createApplicationFetcher } from "@/lib/fetchApplication";
+import { fetchMatchingLenders } from "@/lib/fetchMatchingLenders";
+import { transformMatchingLenders } from "@/lib/transformers";
+import type { CommercialConstructionApi } from "@/types/api";
 import { ArrowLeftToLine } from "lucide-react";
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
 
 type PageProps = {
   params: Promise<{ id: string }>;
@@ -35,6 +38,13 @@ export default async function CommercialConstructionDetailPage({
   const record = await fetchApplication(id);
 
   if (!record) notFound();
+
+  // Fetch matching lenders
+  const matchingLendersData = await fetchMatchingLenders(
+    "commercial-construction",
+    id
+  );
+  const matchingLenders = transformMatchingLenders(matchingLendersData);
 
   const clientFullName = [
     record.client_first_name ?? record.first_name ?? "",
@@ -284,6 +294,14 @@ export default async function CommercialConstructionDetailPage({
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Matching Lenders Section */}
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight mb-4">
+            Matching Lenders
+          </h2>
+          <MatchingLendersTable rows={matchingLenders} />
         </div>
       </div>
     </main>

@@ -15,6 +15,9 @@ import type { ResidentialAcquisitionApi } from "@/types/api";
 import { createApplicationFetcher } from "@/lib/fetchApplication";
 import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
+import { MatchingLendersTable } from "@/components/tables/MatchingLendersTable";
+import { fetchMatchingLenders } from "@/lib/fetchMatchingLenders";
+import { transformMatchingLenders } from "@/lib/transformers";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -32,6 +35,13 @@ export default async function ResidentialAcquisitionDetailPage({
   const { id } = await params;
   const record = await fetchApplication(id);
   if (!record) notFound();
+
+  // Fetch matching lenders
+  const matchingLendersData = await fetchMatchingLenders(
+    "residential-acquisition",
+    id
+  );
+  const matchingLenders = transformMatchingLenders(matchingLendersData);
 
   const clientFullName = [
     record.client_first_name ?? record.first_name ?? "",
@@ -236,6 +246,14 @@ export default async function ResidentialAcquisitionDetailPage({
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Matching Lenders Section */}
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight mb-4">
+            Matching Lenders
+          </h2>
+          <MatchingLendersTable rows={matchingLenders} />
         </div>
       </div>
     </main>
