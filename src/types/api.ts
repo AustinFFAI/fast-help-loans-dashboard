@@ -403,6 +403,31 @@ export type ResidentialRefinanceApi = {
   comments?: string;
 };
 
+// Matching Lender (based on backend Lender model)
+export type MatchingLenderApi = {
+  id: number;
+  spreadsheet_id?: string;
+  
+  lender_name?: string;
+  loan_min?: NumLike;
+  loan_max?: NumLike;
+  fico_min?: number;
+  lending_states?: string; // Text field storing comma-separated states
+  property_types?: string; // Text field storing comma-separated property types
+  max_ltv?: NumLike;
+  
+  company_name?: string;
+  contact_name?: string;
+  contact_phone?: string;
+  contact_phone_notes?: string;
+  contact_email?: string;
+  contact_email_notes?: string;
+  notes?: string;
+  
+  created_at: ISODateString;
+  updated_at: ISODateString;
+};
+
 // Endpoint-specific response aliases (arrays by default)
 export type CommercialAcquisitionResponse = CommercialAcquisitionApi[];
 export type CommercialConstructionResponse = CommercialConstructionApi[];
@@ -410,3 +435,4 @@ export type CommercialRefinanceResponse = CommercialRefinanceApi[];
 export type ResidentialAcquisitionResponse = ResidentialAcquisitionApi[];
 export type ResidentialConstructionResponse = ResidentialConstructionApi[];
 export type ResidentialRefinanceResponse = ResidentialRefinanceApi[];
+export type MatchingLendersResponse = MatchingLenderApi[];

@@ -15,6 +15,9 @@ import type { ResidentialConstructionApi } from "@/types/api";
 import { createApplicationFetcher } from "@/lib/fetchApplication";
 import { ApplicationTypeEndpoints } from "@/enums/applicationTypeEndpointsEnum";
 import { ArrowLeftToLine } from "lucide-react";
+import { MatchingLendersTable } from "@/components/tables/MatchingLendersTable";
+import { fetchMatchingLenders } from "@/lib/fetchMatchingLenders";
+import { transformMatchingLenders } from "@/lib/transformers";
 
 type PageProps = { params: Promise<{ id: string }> };
 
@@ -32,6 +35,13 @@ export default async function ResidentialConstructionDetailPage({
   const { id } = await params;
   const record = await fetchApplication(id);
   if (!record) notFound();
+
+  // Fetch matching lenders
+  const matchingLendersData = await fetchMatchingLenders(
+    "residential-construction",
+    id
+  );
+  const matchingLenders = transformMatchingLenders(matchingLendersData);
 
   const clientFullName = [
     record.client_first_name ?? record.first_name ?? "",
@@ -269,6 +279,17 @@ export default async function ResidentialConstructionDetailPage({
               </div>
             </CardContent>
           </Card>
+        </div>
+
+        {/* Matching Lenders Section */}
+        <div>
+          <h2 className="text-lg font-semibold tracking-tight mb-2">
+            Matching Lenders
+          </h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Lenders that match the criteria for this application based on loan amount, property type, location, and other requirements.
+          </p>
+          <MatchingLendersTable rows={matchingLenders} />
         </div>
       </div>
     </main>
