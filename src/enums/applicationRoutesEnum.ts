@@ -1,5 +1,6 @@
 export enum ApplicationRoutes {
   Dashboard = "/",
+  Lenders = "/lenders",
   CommercialAcquisition = "/applications/commercial-acquisition",
   CommercialConstruction = "/applications/commercial-construction",
   CommercialRefinance = "/applications/commercial-refinance",

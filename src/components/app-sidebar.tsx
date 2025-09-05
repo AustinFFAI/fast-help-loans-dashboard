@@ -23,6 +23,7 @@ import {
   Home,
   Hammer,
   LayoutDashboard,
+  Users,
 } from "lucide-react";
 import { NavUser } from "./nav-user";
 
@@ -90,6 +91,14 @@ export function AppSidebar() {
                   <Link href={ApplicationRoutes.Dashboard}>
                     <LayoutDashboard />
                     <span>Dashboard</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link href={ApplicationRoutes.Lenders}>
+                    <Users />
+                    <span>Lenders</span>
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
