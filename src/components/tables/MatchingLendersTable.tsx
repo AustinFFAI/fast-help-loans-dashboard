@@ -1,11 +1,13 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import type { ColumnDef } from "@tanstack/react-table";
 import { DataTable } from "@/components/tables/data-table";
 import type { MatchingLenderRow } from "@/types/applications";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const columns: ColumnDef<MatchingLenderRow, unknown>[] = [
   { 
@@ -132,6 +134,17 @@ const columns: ColumnDef<MatchingLenderRow, unknown>[] = [
         {row.original.notes || "-"}
       </div>
     ),
+  },
+  {
+    id: "action",
+    cell: ({ row }) => {
+      const id = row.original.id;
+      return (
+        <Button asChild size="sm">
+          <Link href={`/lenders/${id}`}>View</Link>
+        </Button>
+      );
+    },
   },
 ];
 

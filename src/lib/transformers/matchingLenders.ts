@@ -39,12 +39,18 @@ function formatNumber(value: number | string | null | undefined): string {
 /**
  * Parses a comma-separated string into an array
  */
-function parseCommaSeparated(value: string | null | undefined): string[] {
+function parseCommaSeparated(
+  value: string | string[] | null | undefined
+): string[] {
   if (!value) return [];
-  return value
-    .split(",")
-    .map((item) => item.trim())
-    .filter(Boolean);
+  if (Array.isArray(value)) return value;
+  if (typeof value === "string") {
+    return value
+      .split(",")
+      .map((item) => item.trim())
+      .filter(Boolean);
+  }
+  return [];
 }
 
 /**
@@ -56,7 +62,7 @@ function createLoanRangeDisplay(
 ): string {
   const minFormatted = formatCurrency(loanMin);
   const maxFormatted = formatCurrency(loanMax);
-  
+
   if (minFormatted && maxFormatted) {
     return `${minFormatted} - ${maxFormatted}`;
   } else if (minFormatted) {
@@ -84,14 +90,14 @@ export function transformMatchingLenders(
       contactName: r.contact_name ?? "",
       contactPhone: r.contact_phone ?? "",
       contactEmail: r.contact_email ?? "",
-      
+
       loanRangeDisplay: createLoanRangeDisplay(r.loan_min, r.loan_max),
       maxLtvDisplay: formatPercent(r.max_ltv),
       ficoMinDisplay: formatNumber(r.fico_min),
-      
+
       lendingStates: parseCommaSeparated(r.lending_states),
       propertyTypes: parseCommaSeparated(r.property_types),
-      
+
       notes: r.notes ?? "",
     };
   });
