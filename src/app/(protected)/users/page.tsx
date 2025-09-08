@@ -2,7 +2,6 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { UserManagementTable } from "@/components/tables/UserManagementTable";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Users } from "lucide-react";
@@ -10,7 +9,6 @@ import { Shield, Users } from "lucide-react";
 export default function UsersPage() {
   const { backendUser } = useAuth();
 
-  // Check if user is admin
   if (!backendUser || backendUser.role !== "admin") {
     return (
       <div className="container mx-auto py-6">
@@ -44,4 +42,3 @@ export default function UsersPage() {
     </div>
   );
 }
-

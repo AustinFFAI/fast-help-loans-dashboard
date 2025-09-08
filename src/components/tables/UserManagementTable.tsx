@@ -232,27 +232,11 @@ export function UserManagementTable() {
 
   if (loading) {
     return (
-      <Card>
-        <CardHeader>
-          <CardTitle>User Management</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <div className="flex justify-center items-center h-32">
-            <Spinner variant="circle" className="text-primary" size={40} />
-          </div>
-        </CardContent>
-      </Card>
+      <div className="flex justify-center items-center h-32">
+        <Spinner variant="circle" className="text-primary" size={40} />
+      </div>
     );
   }
 
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle>User Management</CardTitle>
-      </CardHeader>
-      <CardContent>
-        <DataTable columns={columns} data={users} />
-      </CardContent>
-    </Card>
-  );
+  return <DataTable columns={columns} data={users} />;
 }
