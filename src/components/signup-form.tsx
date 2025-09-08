@@ -27,7 +27,7 @@ export function SignupForm({
     setSubmitting(true);
     try {
       await signUpWithEmail(email, password, firstName, lastName);
-      router.push("/lender-profile");
+      router.push("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
     } finally {
@@ -35,20 +35,20 @@ export function SignupForm({
     }
   }
 
-  async function handleGoogleSignup() {
-    setError(null);
-    setSubmitting(true);
-    try {
-      await signInWithGoogle();
-      router.push("/lender-profile");
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "Failed to sign in with Google",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  // async function handleGoogleSignup() {
+  //   setError(null);
+  //   setSubmitting(true);
+  //   try {
+  //     await signInWithGoogle();
+  //     router.push("/lender-profile");
+  //   } catch (err: unknown) {
+  //     setError(
+  //       err instanceof Error ? err.message : "Failed to sign in with Google",
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // }
 
   return (
     <form
