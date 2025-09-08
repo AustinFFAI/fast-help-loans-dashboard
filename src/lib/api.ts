@@ -9,6 +9,18 @@ export type BackendUser = {
   lender_id: number | null;
 };
 
+export type UserManagement = {
+  id: number;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: "admin" | "lender";
+  lender_id: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+};
+
 export type LenderProfile = {
   id: number;
   lender_name: string | null;
@@ -124,4 +136,64 @@ async function safeError(res: Response): Promise<string | undefined> {
       return undefined;
     }
   }
+}
+
+// User Management API functions
+export async function listUsers(
+  currentUser: FirebaseUser,
+): Promise<UserManagement[]> {
+  const res = await authorizedFetch(currentUser, "/auth/users");
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `List users failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateUserRole(
+  currentUser: FirebaseUser,
+  userId: number,
+  role: "admin" | "lender",
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(currentUser, `/auth/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Update user role failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function deleteUser(
+  currentUser: FirebaseUser,
+  userId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(currentUser, `/auth/users/${userId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Delete user failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function activateUser(
+  currentUser: FirebaseUser,
+  userId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(
+    currentUser,
+    `/auth/users/${userId}/activate`,
+    {
+      method: "PATCH",
+    },
+  );
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Activate user failed: ${res.status}`);
+  }
+  return res.json();
 }
