@@ -10,14 +10,6 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { Spinner } from "@/components/ui/loading-spinner";
 import { useAuth } from "@/lib/auth-context";
 import {
@@ -27,6 +19,8 @@ import {
   activateUser,
   UserManagement,
 } from "@/lib/api";
+import { DataTable } from "@/components/tables/data-table";
+import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
 
 export function UserManagementTable() {
@@ -125,6 +119,117 @@ export function UserManagementTable() {
     return `${firstName} ${lastName}`.trim() || "N/A";
   };
 
+  const columns: ColumnDef<UserManagement>[] = [
+    {
+      header: "Name",
+      accessorFn: (row) => getFullName(row),
+      id: "name",
+      cell: ({ row }) => (
+        <span className="font-medium">{getFullName(row.original)}</span>
+      ),
+    },
+    {
+      header: "Email",
+      accessorKey: "email",
+      id: "email",
+    },
+    {
+      header: "Role",
+      id: "role",
+      cell: ({ row }) => (
+        <Badge
+          variant={row.original.role === "admin" ? "default" : "secondary"}
+        >
+          {row.original.role}
+        </Badge>
+      ),
+    },
+    {
+      header: "Status",
+      id: "status",
+      cell: ({ row }) => (
+        <Badge variant={row.original.is_active ? "default" : "destructive"}>
+          {row.original.is_active ? "Active" : "Inactive"}
+        </Badge>
+      ),
+    },
+    {
+      header: "Created",
+      id: "created_at",
+      cell: ({ row }) =>
+        formatDate(row.original.created_at as unknown as string),
+    },
+    {
+      id: "action",
+      meta: { className: "text-right w-0" },
+      cell: ({ row }) => {
+        const userItem = row.original;
+        return (
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="outline" size="sm">
+                Actions
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuItem
+                onClick={() =>
+                  handleRoleUpdate(
+                    userItem.id,
+                    userItem.role === "admin" ? "lender" : "admin",
+                  )
+                }
+                disabled={updating === userItem.id}
+              >
+                {updating === userItem.id ? (
+                  <Spinner
+                    variant="circle"
+                    className="text-primary"
+                    size={40}
+                  />
+                ) : (
+                  "Toggle Role"
+                )}
+              </DropdownMenuItem>
+              {userItem.is_active ? (
+                <DropdownMenuItem
+                  onClick={() => handleDeleteUser(userItem.id)}
+                  disabled={updating === userItem.id}
+                  className="text-destructive"
+                >
+                  {updating === userItem.id ? (
+                    <Spinner
+                      variant="circle"
+                      className="text-primary"
+                      size={40}
+                    />
+                  ) : (
+                    "Deactivate"
+                  )}
+                </DropdownMenuItem>
+              ) : (
+                <DropdownMenuItem
+                  onClick={() => handleActivateUser(userItem.id)}
+                  disabled={updating === userItem.id}
+                >
+                  {updating === userItem.id ? (
+                    <Spinner
+                      variant="circle"
+                      className="text-primary"
+                      size={40}
+                    />
+                  ) : (
+                    "Activate"
+                  )}
+                </DropdownMenuItem>
+              )}
+            </DropdownMenuContent>
+          </DropdownMenu>
+        );
+      },
+    },
+  ];
+
   if (loading) {
     return (
       <Card>
@@ -146,109 +251,7 @@ export function UserManagementTable() {
         <CardTitle>User Management</CardTitle>
       </CardHeader>
       <CardContent>
-        <div className="rounded-md border">
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Role</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Created</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {users.map((userItem) => (
-                <TableRow key={userItem.id}>
-                  <TableCell className="font-medium">
-                    {getFullName(userItem)}
-                  </TableCell>
-                  <TableCell>{userItem.email}</TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={
-                        userItem.role === "admin" ? "default" : "secondary"
-                      }
-                    >
-                      {userItem.role}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <Badge
-                      variant={userItem.is_active ? "default" : "destructive"}
-                    >
-                      {userItem.is_active ? "Active" : "Inactive"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{formatDate(userItem.created_at)}</TableCell>
-                  <TableCell>
-                    <DropdownMenu>
-                      <DropdownMenuTrigger asChild>
-                        <Button variant="outline" size="sm">
-                          Actions
-                        </Button>
-                      </DropdownMenuTrigger>
-                      <DropdownMenuContent align="end">
-                        <DropdownMenuItem
-                          onClick={() =>
-                            handleRoleUpdate(
-                              userItem.id,
-                              userItem.role === "admin" ? "lender" : "admin",
-                            )
-                          }
-                          disabled={updating === userItem.id}
-                        >
-                          {updating === userItem.id ? (
-                            <Spinner
-                              variant="circle"
-                              className="text-primary"
-                              size={40}
-                            />
-                          ) : (
-                            "Toggle Role"
-                          )}
-                        </DropdownMenuItem>
-                        {userItem.is_active ? (
-                          <DropdownMenuItem
-                            onClick={() => handleDeleteUser(userItem.id)}
-                            disabled={updating === userItem.id}
-                            className="text-destructive"
-                          >
-                            {updating === userItem.id ? (
-                              <Spinner
-                                variant="circle"
-                                className="text-primary"
-                                size={40}
-                              />
-                            ) : (
-                              "Deactivate"
-                            )}
-                          </DropdownMenuItem>
-                        ) : (
-                          <DropdownMenuItem
-                            onClick={() => handleActivateUser(userItem.id)}
-                            disabled={updating === userItem.id}
-                          >
-                            {updating === userItem.id ? (
-                              <Spinner
-                                variant="circle"
-                                className="text-primary"
-                                size={40}
-                              />
-                            ) : (
-                              "Activate"
-                            )}
-                          </DropdownMenuItem>
-                        )}
-                      </DropdownMenuContent>
-                    </DropdownMenu>
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div>
+        <DataTable columns={columns} data={users} />
       </CardContent>
     </Card>
   );
