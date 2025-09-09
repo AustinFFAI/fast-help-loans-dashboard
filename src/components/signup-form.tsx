@@ -21,18 +21,8 @@ export function SignupForm({
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [passwordError, setPasswordError] = useState<string | null>(null);
-
-  const validatePasswordMatch = (pwd: string, confirmPwd: string) => {
-    if (confirmPwd && pwd !== confirmPwd) {
-      setPasswordError("Passwords do not match");
-    } else {
-      setPasswordError(null);
-    }
-  };
   const [passwordError, setPasswordError] = useState<string | null>(null);
 
   const validatePasswordMatch = (pwd: string, confirmPwd: string) => {
@@ -143,11 +133,6 @@ export function SignupForm({
             type="password"
             required
             value={password}
-            onChange={(e) => {
-              const newPassword = e.target.value;
-              setPassword(newPassword);
-              validatePasswordMatch(newPassword, confirmPassword);
-            }}
             onChange={(e) => {
               const newPassword = e.target.value;
               setPassword(newPassword);
