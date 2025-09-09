@@ -20,12 +20,30 @@ export function SignupForm({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const validatePasswordMatch = (pwd: string, confirmPwd: string) => {
+    if (confirmPwd && pwd !== confirmPwd) {
+      setPasswordError("Passwords do not match");
+    } else {
+      setPasswordError(null);
+    }
+  };
 
   async function handleEmailSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setPasswordError(null);
+    
+    // Validate password confirmation before submission
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+    
     setSubmitting(true);
     try {
       await signUpWithEmail(
@@ -115,10 +133,41 @@ export function SignupForm({
             type="password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              const newPassword = e.target.value;
+              setPassword(newPassword);
+              validatePasswordMatch(newPassword, confirmPassword);
+            }}
           />
         </div>
-        <Button type="submit" className="w-full" disabled={submitting}>
+        <div className="grid gap-3">
+          <div className="flex items-center">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+          </div>
+          <Input
+            id="confirmPassword"
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => {
+              const newConfirmPassword = e.target.value;
+              setConfirmPassword(newConfirmPassword);
+              validatePasswordMatch(password, newConfirmPassword);
+            }}
+            aria-describedby={passwordError ? "password-error" : undefined}
+            aria-invalid={!!passwordError}
+          />
+          {passwordError && (
+            <p id="password-error" className="text-sm text-red-600" role="alert">
+              {passwordError}
+            </p>
+          )}
+        </div>
+        <Button 
+          type="submit" 
+          className="w-full" 
+          disabled={submitting || !!passwordError || (password !== confirmPassword && confirmPassword !== "")}
+        >
           Sign up
         </Button>
         {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
