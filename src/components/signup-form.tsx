@@ -37,13 +37,13 @@ export function SignupForm({
     e.preventDefault();
     setError(null);
     setPasswordError(null);
-    
+
     // Validate password confirmation before submission
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
       return;
     }
-    
+
     setSubmitting(true);
     try {
       await signUpWithEmail(
@@ -53,7 +53,7 @@ export function SignupForm({
         lastName,
         invite || undefined,
       );
-      router.push("/dashboard");
+      router.push("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
     } finally {
@@ -158,15 +158,23 @@ export function SignupForm({
             aria-invalid={!!passwordError}
           />
           {passwordError && (
-            <p id="password-error" className="text-sm text-red-600" role="alert">
+            <p
+              id="password-error"
+              className="text-sm text-red-600"
+              role="alert"
+            >
               {passwordError}
             </p>
           )}
         </div>
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={submitting || !!passwordError || (password !== confirmPassword && confirmPassword !== "")}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={
+            submitting ||
+            !!passwordError ||
+            (password !== confirmPassword && confirmPassword !== "")
+          }
         >
           Sign up
         </Button>

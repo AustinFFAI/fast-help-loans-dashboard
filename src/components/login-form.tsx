@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
@@ -17,6 +18,7 @@ export function LoginForm({
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sendingReset, setSendingReset] = useState(false);
 
   async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -46,6 +48,27 @@ export function LoginForm({
       setSubmitting(false);
     }
   }
+
+  async function handleForgotPassword(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
+    setError(null);
+    if (!email) {
+      setError("Enter your email above to reset your password");
+      return;
+    }
+    try {
+      setSendingReset(true);
+      const { sendPasswordResetEmail } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent");
+    } catch (err: any) {
+      setError(err?.message || "Failed to send reset email");
+    } finally {
+      setSendingReset(false);
+    }
+  }
+
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
@@ -76,8 +99,9 @@ export function LoginForm({
             <a
               href="#"
               className="ml-auto text-sm underline-offset-4 hover:underline"
+              onClick={handleForgotPassword}
             >
-              Forgot your password?
+              {sendingReset ? "Sending..." : "Forgot your password?"}
             </a>
           </div>
           <Input
