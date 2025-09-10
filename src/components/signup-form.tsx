@@ -37,13 +37,11 @@ export function SignupForm({
     e.preventDefault();
     setError(null);
     setPasswordError(null);
-
     // Validate password confirmation before submission
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
       return;
     }
-
     setSubmitting(true);
     try {
       await signUpWithEmail(
