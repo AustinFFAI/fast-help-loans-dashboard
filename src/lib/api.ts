@@ -154,7 +154,7 @@ export async function listUsers(
 export async function updateUserRole(
   currentUser: FirebaseUser,
   userId: number,
-  role: "admin" | "lender",
+  role: "admin" | "loan_officer",
 ): Promise<{ message: string }> {
   const res = await authorizedFetch(currentUser, `/auth/users/${userId}`, {
     method: "PATCH",

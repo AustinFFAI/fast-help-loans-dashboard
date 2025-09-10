@@ -50,7 +50,7 @@ export function UserManagementTable() {
 
   const handleRoleUpdate = async (
     userId: number,
-    newRole: "admin" | "lender",
+    newRole: "admin" | "loan_officer",
   ) => {
     if (!user) return;
 
@@ -132,6 +132,7 @@ export function UserManagementTable() {
       header: "Email",
       accessorKey: "email",
       id: "email",
+      meta: { className: "hidden md:table-cell" },
     },
     {
       header: "Role",
@@ -147,6 +148,7 @@ export function UserManagementTable() {
     {
       header: "Status",
       id: "status",
+      meta: { className: "hidden sm:table-cell" },
       cell: ({ row }) => (
         <Badge variant={row.original.is_active ? "default" : "destructive"}>
           {row.original.is_active ? "Active" : "Inactive"}
@@ -156,6 +158,7 @@ export function UserManagementTable() {
     {
       header: "Created",
       id: "created_at",
+      meta: { className: "hidden lg:table-cell" },
       cell: ({ row }) =>
         formatDate(row.original.created_at as unknown as string),
     },
@@ -164,6 +167,10 @@ export function UserManagementTable() {
       meta: { className: "text-right w-0" },
       cell: ({ row }) => {
         const userItem = row.original;
+        const isSelf =
+          !!user?.email &&
+          !!userItem.email &&
+          user.email.toLowerCase() === userItem.email.toLowerCase();
         return (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
@@ -176,10 +183,10 @@ export function UserManagementTable() {
                 onClick={() =>
                   handleRoleUpdate(
                     userItem.id,
-                    userItem.role === "admin" ? "lender" : "admin",
+                    userItem.role === "admin" ? "loan_officer" : "admin",
                   )
                 }
-                disabled={updating === userItem.id}
+                disabled={updating === userItem.id || isSelf}
               >
                 {updating === userItem.id ? (
                   <Spinner
@@ -194,7 +201,7 @@ export function UserManagementTable() {
               {userItem.is_active ? (
                 <DropdownMenuItem
                   onClick={() => handleDeleteUser(userItem.id)}
-                  disabled={updating === userItem.id}
+                  disabled={updating === userItem.id || isSelf}
                   className="text-destructive"
                 >
                   {updating === userItem.id ? (
@@ -210,7 +217,7 @@ export function UserManagementTable() {
               ) : (
                 <DropdownMenuItem
                   onClick={() => handleActivateUser(userItem.id)}
-                  disabled={updating === userItem.id}
+                  disabled={updating === userItem.id || isSelf}
                 >
                   {updating === userItem.id ? (
                     <Spinner
