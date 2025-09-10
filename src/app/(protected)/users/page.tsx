@@ -5,6 +5,7 @@ import { UserManagementTable } from "@/components/tables/UserManagementTable";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Users } from "lucide-react";
+import { InviteUserDialog } from "@/components/users/invite-user-dialog";
 
 export default function UsersPage() {
   const { backendUser } = useAuth();
@@ -32,10 +33,13 @@ export default function UsersPage() {
             Manage user accounts, roles, and permissions
           </p>
         </div>
-        <Badge variant="outline" className="flex items-center gap-2">
-          <Users className="h-4 w-4" />
-          Admin Access
-        </Badge>
+        <div className="flex items-center gap-3">
+          <Badge variant="outline" className="flex items-center gap-2">
+            <Users className="h-4 w-4" />
+            Admin Access
+          </Badge>
+          <InviteUserDialog />
+        </div>
       </div>
 
       <UserManagementTable />

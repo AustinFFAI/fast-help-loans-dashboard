@@ -77,6 +77,7 @@ export async function provisionUser(
     lender_name: string;
     contact_name: string;
     contact_email: string;
+    invite: string;
   }>,
 ): Promise<BackendUser> {
   const res = await authorizedFetch(currentUser, "/auth/provision", {
@@ -194,6 +195,38 @@ export async function activateUser(
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Activate user failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function createInvitation(
+  currentUser: FirebaseUser,
+  email: string,
+  role: "admin" | "lender",
+): Promise<{ message: string; id: number }> {
+  const res = await authorizedFetch(currentUser, "/auth/invitations", {
+    method: "POST",
+    body: JSON.stringify({ email, role }),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Create invitation failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function resendInvitation(
+  currentUser: FirebaseUser,
+  invitationId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(
+    currentUser,
+    `/auth/invitations/${invitationId}/resend`,
+    { method: "POST" },
+  );
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Resend invitation failed: ${res.status}`);
   }
   return res.json();
 }

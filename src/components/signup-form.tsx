@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export function SignupForm({
@@ -14,6 +14,8 @@ export function SignupForm({
 }: React.ComponentProps<"form">) {
   const { signUpWithEmail, signInWithGoogle } = useAuth();
   const router = useRouter();
+  const search = useSearchParams();
+  const invite = search.get("invite");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -26,7 +28,13 @@ export function SignupForm({
     setError(null);
     setSubmitting(true);
     try {
-      await signUpWithEmail(email, password, firstName, lastName);
+      await signUpWithEmail(
+        email,
+        password,
+        firstName,
+        lastName,
+        invite || undefined,
+      );
       router.push("/dashboard");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
