@@ -5,7 +5,7 @@ import type { User as FirebaseUser } from "firebase/auth";
 export type BackendUser = {
   id: number;
   email: string;
-  role: "admin" | "lender";
+  role: "admin" | "loan_officer";
   lender_id: number | null;
 };
 
@@ -14,7 +14,7 @@ export type UserManagement = {
   email: string;
   first_name: string | null;
   last_name: string | null;
-  role: "admin" | "lender";
+  role: "admin" | "loan_officer";
   lender_id: number | null;
   is_active: boolean;
   created_at: string;
@@ -202,7 +202,7 @@ export async function activateUser(
 export async function createInvitation(
   currentUser: FirebaseUser,
   email: string,
-  role: "admin" | "lender",
+  role: "admin" | "loan_officer",
 ): Promise<{ message: string; id: number }> {
   const res = await authorizedFetch(currentUser, "/auth/invitations", {
     method: "POST",

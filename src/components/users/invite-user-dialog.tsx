@@ -7,21 +7,21 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { toast } from "sonner";
 
 export function InviteUserDialog() {
   const { user } = useAuth();
   const [open, setOpen] = useState(false);
   const [email, setEmail] = useState("");
-  const [role, setRole] = useState<"admin" | "lender">("lender");
+  const [role, setRole] = useState<"admin" | "loan_officer">("loan_officer");
   const [loading, setLoading] = useState(false);
 
   async function onInvite() {
@@ -32,7 +32,7 @@ export function InviteUserDialog() {
       toast.success("Invitation sent");
       setOpen(false);
       setEmail("");
-      setRole("lender");
+      setRole("loan_officer");
     } catch (e) {
       const msg = e instanceof Error ? e.message : "Failed to send invite";
       toast.error(msg);
@@ -42,18 +42,18 @@ export function InviteUserDialog() {
   }
 
   return (
-    <Sheet open={open} onOpenChange={setOpen}>
-      <SheetTrigger asChild>
+    <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTrigger asChild>
         <Button>Invite User</Button>
-      </SheetTrigger>
-      <SheetContent side="right">
-        <SheetHeader>
-          <SheetTitle>Invite User</SheetTitle>
-          <SheetDescription>
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Invite User</DialogTitle>
+          <DialogDescription>
             Send an invitation to a user to join with a specific role.
-          </SheetDescription>
-        </SheetHeader>
-        <div className="grid gap-4 py-4">
+          </DialogDescription>
+        </DialogHeader>
+        <div className="grid gap-4 py-2">
           <div className="grid gap-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -70,19 +70,21 @@ export function InviteUserDialog() {
               id="role"
               className="border rounded-md h-10 px-3"
               value={role}
-              onChange={(e) => setRole(e.target.value as "admin" | "lender")}
+              onChange={(e) =>
+                setRole(e.target.value as "admin" | "loan_officer")
+              }
             >
-              <option value="lender">Lender</option>
+              <option value="loan_officer">Loan Officer</option>
               <option value="admin">Admin</option>
             </select>
           </div>
         </div>
-        <SheetFooter>
+        <DialogFooter>
           <Button onClick={onInvite} disabled={loading || !email}>
             {loading ? "Sending..." : "Send Invite"}
           </Button>
-        </SheetFooter>
-      </SheetContent>
-    </Sheet>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
   );
 }
