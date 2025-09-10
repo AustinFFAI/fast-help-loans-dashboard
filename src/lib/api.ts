@@ -9,6 +9,12 @@ export type BackendUser = {
   lender_id: number | null;
 };
 
+export type Me = BackendUser & {
+  first_name?: string | null;
+  last_name?: string | null;
+  is_active?: boolean;
+};
+
 export type UserManagement = {
   id: number;
   email: string;
@@ -91,11 +97,26 @@ export async function provisionUser(
   return res.json();
 }
 
-export async function getMe(currentUser: FirebaseUser): Promise<BackendUser> {
+export async function getMe(currentUser: FirebaseUser): Promise<Me> {
   const res = await authorizedFetch(currentUser, "/auth/me");
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Get me failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateMe(
+  currentUser: FirebaseUser,
+  body: Partial<{ first_name: string; last_name: string }>,
+): Promise<Me> {
+  const res = await authorizedFetch(currentUser, "/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Update me failed: ${res.status}`);
   }
   return res.json();
 }
