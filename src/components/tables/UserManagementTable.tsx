@@ -141,7 +141,7 @@ export function UserManagementTable() {
         <Badge
           variant={row.original.role === "admin" ? "default" : "secondary"}
         >
-          {row.original.role}
+          {row.original.role.toUpperCase()}
         </Badge>
       ),
     },
@@ -150,7 +150,7 @@ export function UserManagementTable() {
       id: "status",
       meta: { className: "hidden sm:table-cell" },
       cell: ({ row }) => (
-        <Badge variant={row.original.is_active ? "default" : "destructive"}>
+        <Badge variant={row.original.is_active ? "success" : "destructive"}>
           {row.original.is_active ? "Active" : "Inactive"}
         </Badge>
       ),
