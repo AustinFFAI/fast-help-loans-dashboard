@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { NavUser } from "./nav-user";
 import { useAuth } from "@/lib/auth-context";
+import { usePathname } from "next/navigation";
 
 type AppLink = { href: ApplicationRoutes; label: string; icon: LucideIcon };
 type AppSection = { label: string; items: AppLink[] };
@@ -77,6 +78,7 @@ const applicationSections: AppSection[] = [
 export function AppSidebar() {
   const { backendUser } = useAuth();
   const isAdmin = backendUser?.role === "admin";
+  const pathname = usePathname();
 
   return (
     <Sidebar>
@@ -91,7 +93,10 @@ export function AppSidebar() {
           <SidebarGroupContent>
             <SidebarMenu>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname === ApplicationRoutes.Dashboard}
+                >
                   <Link href={ApplicationRoutes.Dashboard}>
                     <LayoutDashboard />
                     <span>Dashboard</span>
@@ -99,7 +104,10 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </SidebarMenuItem>
               <SidebarMenuItem>
-                <SidebarMenuButton asChild>
+                <SidebarMenuButton
+                  asChild
+                  isActive={pathname.startsWith(ApplicationRoutes.Lenders)}
+                >
                   <Link href={ApplicationRoutes.Lenders}>
                     <Users />
                     <span>Lenders</span>
@@ -108,7 +116,10 @@ export function AppSidebar() {
               </SidebarMenuItem>
               {isAdmin && (
                 <SidebarMenuItem>
-                  <SidebarMenuButton asChild>
+                  <SidebarMenuButton
+                    asChild
+                    isActive={pathname.startsWith(ApplicationRoutes.Users)}
+                  >
                     <Link href={ApplicationRoutes.Users}>
                       <Users />
                       <span>User Management</span>
@@ -136,7 +147,10 @@ export function AppSidebar() {
                   <SidebarMenuSub>
                     {section.items.map(({ href, label, icon: Icon }) => (
                       <SidebarMenuSubItem key={href}>
-                        <SidebarMenuSubButton asChild>
+                        <SidebarMenuSubButton
+                          asChild
+                          isActive={pathname.startsWith(href)}
+                        >
                           <Link href={href}>
                             <Icon />
                             <span>{label}</span>

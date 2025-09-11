@@ -21,12 +21,24 @@ import {
 import { DataTable } from "@/components/tables/data-table";
 import type { ColumnDef } from "@tanstack/react-table";
 import { toast } from "sonner";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export function UserManagementTable() {
   const { user } = useAuth();
   const [users, setUsers] = useState<UserManagement[]>([]);
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [userIdToDeactivate, setUserIdToDeactivate] = useState<number | null>(
+    null,
+  );
 
   const fetchUsers = useCallback(async () => {
     if (!user) return;
@@ -69,10 +81,6 @@ export function UserManagementTable() {
   const handleDeleteUser = async (userId: number) => {
     if (!user) return;
 
-    if (!confirm("Are you sure you want to deactivate this user?")) {
-      return;
-    }
-
     try {
       setUpdating(userId);
       await deleteUser(user, userId);
@@ -83,7 +91,14 @@ export function UserManagementTable() {
       toast.error("Failed to deactivate user");
     } finally {
       setUpdating(null);
+      setConfirmOpen(false);
+      setUserIdToDeactivate(null);
     }
+  };
+
+  const openDeactivateConfirm = (userId: number) => {
+    setUserIdToDeactivate(userId);
+    setConfirmOpen(true);
   };
 
   const handleActivateUser = async (userId: number) => {
@@ -199,7 +214,7 @@ export function UserManagementTable() {
               </DropdownMenuItem>
               {userItem.is_active ? (
                 <DropdownMenuItem
-                  onClick={() => handleDeleteUser(userItem.id)}
+                  onClick={() => openDeactivateConfirm(userItem.id)}
                   disabled={updating === userItem.id || isSelf}
                   className="text-destructive"
                 >
@@ -244,5 +259,43 @@ export function UserManagementTable() {
     );
   }
 
-  return <DataTable columns={columns} data={users} />;
+  return (
+    <>
+      <DataTable columns={columns} data={users} />
+      <Dialog open={confirmOpen} onOpenChange={setConfirmOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Deactivate user?</DialogTitle>
+            <DialogDescription>
+              This will revoke access until the user is reactivated.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <div className="flex gap-2 justify-end">
+              <Button variant="outline" onClick={() => setConfirmOpen(false)}>
+                Cancel
+              </Button>
+              <Button
+                variant="destructive"
+                onClick={() =>
+                  userIdToDeactivate && handleDeleteUser(userIdToDeactivate)
+                }
+                disabled={updating !== null}
+              >
+                {updating !== null ? (
+                  <Spinner
+                    variant="circle"
+                    className="text-background"
+                    size={20}
+                  />
+                ) : (
+                  "Deactivate"
+                )}
+              </Button>
+            </div>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
+  );
 }
