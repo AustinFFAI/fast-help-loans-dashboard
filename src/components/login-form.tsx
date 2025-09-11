@@ -28,7 +28,12 @@ export function LoginForm({
       await signInWithEmail(email, password);
       router.push("/");
     } catch (err: unknown) {
-      setError(err instanceof Error ? err.message : "Failed to sign in");
+      const message = err instanceof Error ? err.message : "Failed to sign in";
+      if (/deactivated/i.test(message)) {
+        setError("Your account is deactivated. Contact an administrator.");
+      } else {
+        setError(message);
+      }
     } finally {
       setSubmitting(false);
     }
