@@ -12,7 +12,7 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const router = useRouter();
   const search = useSearchParams();
   const invite = search.get("invite");

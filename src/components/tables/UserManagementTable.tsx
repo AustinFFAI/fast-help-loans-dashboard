@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
@@ -29,7 +28,7 @@ export function UserManagementTable() {
   const [loading, setLoading] = useState(true);
   const [updating, setUpdating] = useState<number | null>(null);
 
-  const fetchUsers = async () => {
+  const fetchUsers = useCallback(async () => {
     if (!user) return;
 
     try {
@@ -42,11 +41,11 @@ export function UserManagementTable() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
     fetchUsers();
-  }, [user]);
+  }, [user, fetchUsers]);
 
   const handleRoleUpdate = async (
     userId: number,

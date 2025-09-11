@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useAuth } from "@/lib/auth-context";
-import { getMe, updateMe, type Me } from "@/lib/api";
+import { getMe, updateMe } from "@/lib/api";
 import RequireAuth from "@/components/require-auth";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,6 @@ import { toast } from "sonner";
 
 export default function AccountPage() {
   const { user: firebaseUser } = useAuth();
-  const [me, setMe] = useState<Me | null>(null);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [saving, setSaving] = useState(false);
@@ -21,7 +20,6 @@ export default function AccountPage() {
     if (!firebaseUser) return;
     getMe(firebaseUser)
       .then((data) => {
-        setMe(data);
         setFirstName(data.first_name || "");
         setLastName(data.last_name || "");
       })
@@ -33,14 +31,14 @@ export default function AccountPage() {
     if (!firebaseUser) return;
     try {
       setSaving(true);
-      const updated = await updateMe(firebaseUser, {
+      await updateMe(firebaseUser, {
         first_name: firstName,
         last_name: lastName,
       });
-      setMe(updated);
       toast.success("Profile updated");
-    } catch (err: any) {
-      toast.error(String(err?.message || err));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      toast.error(message);
     } finally {
       setSaving(false);
     }
@@ -56,8 +54,9 @@ export default function AccountPage() {
       const { auth } = await import("@/lib/firebase");
       await sendPasswordResetEmail(auth, firebaseUser.email);
       toast.success("Password reset email sent");
-    } catch (err: any) {
-      toast.error(String(err?.message || err));
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      toast.error(message);
     }
   }
 

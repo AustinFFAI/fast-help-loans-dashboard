@@ -12,7 +12,7 @@ export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -34,20 +34,20 @@ export function LoginForm({
     }
   }
 
-  async function handleGoogleLogin() {
-    setError(null);
-    setSubmitting(true);
-    try {
-      await signInWithGoogle();
-      router.push("/");
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "Failed to sign in with Google",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  // async function handleGoogleLogin() {
+  //   setError(null);
+  //   setSubmitting(true);
+  //   try {
+  //     await signInWithGoogle();
+  //     router.push("/");
+  //   } catch (err: unknown) {
+  //     setError(
+  //       err instanceof Error ? err.message : "Failed to sign in with Google",
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // }
 
   async function handleForgotPassword(e: React.MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
@@ -62,8 +62,10 @@ export function LoginForm({
       const { auth } = await import("@/lib/firebase");
       await sendPasswordResetEmail(auth, email);
       toast.success("Password reset email sent");
-    } catch (err: any) {
-      setError(err?.message || "Failed to send reset email");
+    } catch (err: unknown) {
+      setError(
+        err instanceof Error ? err.message : "Failed to send reset email",
+      );
     } finally {
       setSendingReset(false);
     }
@@ -112,7 +114,7 @@ export function LoginForm({
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={submitting}>
           Login
         </Button>
         {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
