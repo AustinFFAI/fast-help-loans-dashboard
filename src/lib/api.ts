@@ -5,8 +5,26 @@ import type { User as FirebaseUser } from "firebase/auth";
 export type BackendUser = {
   id: number;
   email: string;
-  role: "admin" | "lender";
+  role: "admin" | "loan_officer";
   lender_id: number | null;
+};
+
+export type Me = BackendUser & {
+  first_name?: string | null;
+  last_name?: string | null;
+  is_active?: boolean;
+};
+
+export type UserManagement = {
+  id: number;
+  email: string;
+  first_name: string | null;
+  last_name: string | null;
+  role: "admin" | "loan_officer";
+  lender_id: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
 };
 
 export type LenderProfile = {
@@ -65,6 +83,7 @@ export async function provisionUser(
     lender_name: string;
     contact_name: string;
     contact_email: string;
+    invite: string;
   }>,
 ): Promise<BackendUser> {
   const res = await authorizedFetch(currentUser, "/auth/provision", {
@@ -78,11 +97,26 @@ export async function provisionUser(
   return res.json();
 }
 
-export async function getMe(currentUser: FirebaseUser): Promise<BackendUser> {
+export async function getMe(currentUser: FirebaseUser): Promise<Me> {
   const res = await authorizedFetch(currentUser, "/auth/me");
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Get me failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateMe(
+  currentUser: FirebaseUser,
+  body: Partial<{ first_name: string; last_name: string }>,
+): Promise<Me> {
+  const res = await authorizedFetch(currentUser, "/auth/me", {
+    method: "PATCH",
+    body: JSON.stringify(body),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Update me failed: ${res.status}`);
   }
   return res.json();
 }
@@ -124,4 +158,96 @@ async function safeError(res: Response): Promise<string | undefined> {
       return undefined;
     }
   }
+}
+
+// User Management API functions
+export async function listUsers(
+  currentUser: FirebaseUser,
+): Promise<UserManagement[]> {
+  const res = await authorizedFetch(currentUser, "/auth/users");
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `List users failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function updateUserRole(
+  currentUser: FirebaseUser,
+  userId: number,
+  role: "admin" | "loan_officer",
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(currentUser, `/auth/users/${userId}`, {
+    method: "PATCH",
+    body: JSON.stringify({ role }),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Update user role failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function deleteUser(
+  currentUser: FirebaseUser,
+  userId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(currentUser, `/auth/users/${userId}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Delete user failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function activateUser(
+  currentUser: FirebaseUser,
+  userId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(
+    currentUser,
+    `/auth/users/${userId}/activate`,
+    {
+      method: "PATCH",
+    },
+  );
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Activate user failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function createInvitation(
+  currentUser: FirebaseUser,
+  email: string,
+  role: "admin" | "loan_officer",
+): Promise<{ message: string; id: number }> {
+  const res = await authorizedFetch(currentUser, "/auth/invitations", {
+    method: "POST",
+    body: JSON.stringify({ email, role }),
+  });
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Create invitation failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function resendInvitation(
+  currentUser: FirebaseUser,
+  invitationId: number,
+): Promise<{ message: string }> {
+  const res = await authorizedFetch(
+    currentUser,
+    `/auth/invitations/${invitationId}/resend`,
+    { method: "POST" },
+  );
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `Resend invitation failed: ${res.status}`);
+  }
+  return res.json();
 }

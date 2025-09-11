@@ -5,15 +5,17 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const router = useRouter();
+  const search = useSearchParams();
+  const invite = search.get("invite");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
@@ -35,17 +37,21 @@ export function SignupForm({
     e.preventDefault();
     setError(null);
     setPasswordError(null);
-    
     // Validate password confirmation before submission
     if (password !== confirmPassword) {
       setPasswordError("Passwords do not match");
       return;
     }
-    
     setSubmitting(true);
     try {
-      await signUpWithEmail(email, password, firstName, lastName);
-      router.push("/dashboard");
+      await signUpWithEmail(
+        email,
+        password,
+        firstName,
+        lastName,
+        invite || undefined,
+      );
+      router.push("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
     } finally {
@@ -150,15 +156,23 @@ export function SignupForm({
             aria-invalid={!!passwordError}
           />
           {passwordError && (
-            <p id="password-error" className="text-sm text-red-600" role="alert">
+            <p
+              id="password-error"
+              className="text-sm text-red-600"
+              role="alert"
+            >
               {passwordError}
             </p>
           )}
         </div>
-        <Button 
-          type="submit" 
-          className="w-full" 
-          disabled={submitting || !!passwordError || (password !== confirmPassword && confirmPassword !== "")}
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={
+            submitting ||
+            !!passwordError ||
+            (password !== confirmPassword && confirmPassword !== "")
+          }
         >
           Sign up
         </Button>

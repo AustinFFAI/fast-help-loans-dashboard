@@ -7,4 +7,5 @@ export enum ApplicationRoutes {
   ResidentialAcquisition = "/applications/residential-acquisition",
   ResidentialConstruction = "/applications/residential-construction",
   ResidentialRefinance = "/applications/residential-refinance",
+  Users = "/users",
 }

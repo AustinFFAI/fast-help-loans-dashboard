@@ -6,17 +6,19 @@ import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { toast } from "sonner";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const { signInWithEmail, signInWithGoogle } = useAuth();
+  const { signInWithEmail } = useAuth();
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [sendingReset, setSendingReset] = useState(false);
 
   async function handleEmailLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -32,20 +34,43 @@ export function LoginForm({
     }
   }
 
-  async function handleGoogleLogin() {
+  // async function handleGoogleLogin() {
+  //   setError(null);
+  //   setSubmitting(true);
+  //   try {
+  //     await signInWithGoogle();
+  //     router.push("/");
+  //   } catch (err: unknown) {
+  //     setError(
+  //       err instanceof Error ? err.message : "Failed to sign in with Google",
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // }
+
+  async function handleForgotPassword(e: React.MouseEvent<HTMLAnchorElement>) {
+    e.preventDefault();
     setError(null);
-    setSubmitting(true);
+    if (!email) {
+      setError("Enter your email above to reset your password");
+      return;
+    }
     try {
-      await signInWithGoogle();
-      router.push("/");
+      setSendingReset(true);
+      const { sendPasswordResetEmail } = await import("firebase/auth");
+      const { auth } = await import("@/lib/firebase");
+      await sendPasswordResetEmail(auth, email);
+      toast.success("Password reset email sent");
     } catch (err: unknown) {
       setError(
-        err instanceof Error ? err.message : "Failed to sign in with Google",
+        err instanceof Error ? err.message : "Failed to send reset email",
       );
     } finally {
-      setSubmitting(false);
+      setSendingReset(false);
     }
   }
+
   return (
     <form
       className={cn("flex flex-col gap-6", className)}
@@ -76,8 +101,9 @@ export function LoginForm({
             <a
               href="#"
               className="ml-auto text-sm underline-offset-4 hover:underline"
+              onClick={handleForgotPassword}
             >
-              Forgot your password?
+              {sendingReset ? "Sending..." : "Forgot your password?"}
             </a>
           </div>
           <Input
@@ -88,7 +114,7 @@ export function LoginForm({
             onChange={(e) => setPassword(e.target.value)}
           />
         </div>
-        <Button type="submit" className="w-full">
+        <Button type="submit" className="w-full" disabled={submitting}>
           Login
         </Button>
         {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

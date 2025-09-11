@@ -26,6 +26,7 @@ import {
   Users,
 } from "lucide-react";
 import { NavUser } from "./nav-user";
+import { useAuth } from "@/lib/auth-context";
 
 type AppLink = { href: ApplicationRoutes; label: string; icon: LucideIcon };
 type AppSection = { label: string; items: AppLink[] };
@@ -74,6 +75,9 @@ const applicationSections: AppSection[] = [
 ];
 
 export function AppSidebar() {
+  const { backendUser } = useAuth();
+  const isAdmin = backendUser?.role === "admin";
+
   return (
     <Sidebar>
       <SidebarHeader>
@@ -102,6 +106,16 @@ export function AppSidebar() {
                   </Link>
                 </SidebarMenuButton>
               </SidebarMenuItem>
+              {isAdmin && (
+                <SidebarMenuItem>
+                  <SidebarMenuButton asChild>
+                    <Link href={ApplicationRoutes.Users}>
+                      <Users />
+                      <span>User Management</span>
+                    </Link>
+                  </SidebarMenuButton>
+                </SidebarMenuItem>
+              )}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>

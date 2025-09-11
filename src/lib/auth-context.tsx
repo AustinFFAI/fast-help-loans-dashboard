@@ -29,6 +29,7 @@ type AuthContextValue = {
     password: string,
     firstName: string,
     lastName: string,
+    inviteToken?: string,
   ) => Promise<void>;
   signOutUser: () => Promise<void>;
 };
@@ -104,17 +105,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password: string,
         firstName: string,
         lastName: string,
+        inviteToken?: string,
       ) {
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
-          password
+          password,
         );
         const me = await provisionUser(cred.user, {
           given_name: firstName,
           family_name: lastName,
           contact_name: `${firstName} ${lastName}`,
           contact_email: email,
+          invite: inviteToken ?? undefined,
         });
         setBackendUser(me);
       },
@@ -124,7 +127,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setBackendUser(null);
       },
     }),
-    [user, loading, backendUser]
+    [user, loading, backendUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
