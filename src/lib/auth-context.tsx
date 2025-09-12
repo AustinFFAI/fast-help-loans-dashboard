@@ -75,18 +75,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             setBackendUser(null);
             return;
           }
-          // If not deactivated, attempt provisioning (may still throw)
-          try {
-            me = await provisionUser(firebaseUser);
-          } catch (err2) {
-            if (isDeactivatedError(err2)) {
-              await signOut(auth);
-              setUser(null);
-              setBackendUser(null);
-              return;
-            }
-            throw err2;
-          }
         }
         setBackendUser(me);
       } finally {
@@ -114,20 +102,6 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
             throw new Error(
               "Your account is deactivated. Contact an administrator.",
             );
-          }
-          try {
-            const me = await provisionUser(cred.user);
-            setBackendUser(me);
-          } catch (err2) {
-            if (isDeactivatedError(err2)) {
-              await signOut(auth);
-              setUser(null);
-              setBackendUser(null);
-              throw new Error(
-                "Your account is deactivated. Contact an administrator.",
-              );
-            }
-            throw err2;
           }
         }
       },

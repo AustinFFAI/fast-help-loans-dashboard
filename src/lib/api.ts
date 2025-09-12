@@ -6,7 +6,6 @@ export type BackendUser = {
   id: number;
   email: string;
   role: "admin" | "loan_officer";
-  lender_id: number | null;
 };
 
 export type Me = BackendUser & {
@@ -21,7 +20,6 @@ export type UserManagement = {
   first_name: string | null;
   last_name: string | null;
   role: "admin" | "loan_officer";
-  lender_id: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
@@ -49,6 +47,22 @@ export type LenderProfileUpdate = {
   loan_min?: number;
   loan_max?: number;
   max_ltv?: number;
+};
+
+export type Invitation = {
+  id: number;
+  email: string;
+  role: "admin" | "loan_officer";
+  accepted: boolean;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+  invited_by?: {
+    id: number | null;
+    email: string | null;
+    first_name: string | null;
+    last_name: string | null;
+  };
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
@@ -248,6 +262,17 @@ export async function resendInvitation(
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Resend invitation failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function listInvitations(
+  currentUser: FirebaseUser,
+): Promise<Invitation[]> {
+  const res = await authorizedFetch(currentUser, "/auth/invitations");
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `List invitations failed: ${res.status}`);
   }
   return res.json();
 }

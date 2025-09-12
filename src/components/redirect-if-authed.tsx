@@ -9,20 +9,20 @@ export default function RedirectIfAuthed({
 }: {
   children: React.ReactNode;
 }) {
-  const { user, loading } = useAuth();
+  const { backendUser, loading } = useAuth();
   const router = useRouter();
 
   useEffect(() => {
-    if (!loading && user) {
+    if (!loading && backendUser) {
       router.replace("/");
     }
-  }, [loading, user, router]);
+  }, [loading, backendUser, router]);
 
   if (loading) {
     return <div className="p-8 text-sm text-muted-foreground">Loading…</div>;
   }
 
-  if (user) {
+  if (backendUser) {
     return null;
   }
 
