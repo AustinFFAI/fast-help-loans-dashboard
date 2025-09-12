@@ -49,6 +49,27 @@ export function InvitationsTable() {
     () => [
       { header: "Email", accessorKey: "email", id: "email" },
       {
+        header: "Invited By",
+        id: "invited_by",
+        cell: ({ row }) => {
+          const inviter = row.original.invited_by;
+          if (!inviter) return "—";
+          const name = [inviter.first_name, inviter.last_name]
+            .filter(Boolean)
+            .join(" ");
+          const displayName = name || inviter.email || "—";
+          if (inviter.email && name) {
+            return (
+              <span className="flex flex-col">
+                <span>{name} </span>
+                <span className="text-muted-foreground">({inviter.email})</span>
+              </span>
+            );
+          }
+          return displayName;
+        },
+      },
+      {
         header: "Role",
         id: "role",
         cell: ({ row }) => (

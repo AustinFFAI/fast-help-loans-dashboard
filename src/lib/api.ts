@@ -57,6 +57,12 @@ export type Invitation = {
   expires_at: string | null;
   created_at: string;
   updated_at: string;
+  invited_by?: {
+    id: number | null;
+    email: string | null;
+    first_name: string | null;
+    last_name: string | null;
+  };
 };
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
