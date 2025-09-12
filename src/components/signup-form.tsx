@@ -16,9 +16,11 @@ export function SignupForm({
   const router = useRouter();
   const search = useSearchParams();
   const invite = search.get("invite");
+  const emailFromQuery = search.get("email") || "";
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailFromQuery);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
@@ -119,6 +121,7 @@ export function SignupForm({
             placeholder="m@example.com"
             required
             value={email}
+            disabled={!!invite}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>

@@ -6,7 +6,6 @@ export type BackendUser = {
   id: number;
   email: string;
   role: "admin" | "loan_officer";
-  lender_id: number | null;
 };
 
 export type Me = BackendUser & {
@@ -21,7 +20,6 @@ export type UserManagement = {
   first_name: string | null;
   last_name: string | null;
   role: "admin" | "loan_officer";
-  lender_id: number | null;
   is_active: boolean;
   created_at: string;
   updated_at: string;
