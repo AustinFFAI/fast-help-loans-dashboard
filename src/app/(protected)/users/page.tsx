@@ -2,6 +2,7 @@
 
 import { useAuth } from "@/lib/auth-context";
 import { UserManagementTable } from "@/components/tables/UserManagementTable";
+import { InvitationsTable } from "@/components/tables/InvitationsTable";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Shield, Users } from "lucide-react";
@@ -42,7 +43,59 @@ export default function UsersPage() {
         </div>
       </div>
 
-      <UserManagementTable />
+      <div className="space-y-4">
+        <div className="flex gap-2">
+          {/* Simple tabs using buttons to avoid adding new UI primitives */}
+          <button
+            className="px-3 py-1 rounded-md border data-[active=true]:bg-primary data-[active=true]:text-background"
+            data-active={true}
+            onClick={(e) => {
+              const container =
+                (e.currentTarget.closest("main") as HTMLElement) ||
+                document.body;
+              container
+                .querySelectorAll("[data-users-tab]")
+                .forEach((el) => el.setAttribute("hidden", "hidden"));
+              container
+                .querySelector("[data-users-tab=users]")
+                ?.removeAttribute("hidden");
+              container
+                .querySelectorAll("button[data-active]")
+                .forEach((btn) => btn.setAttribute("data-active", "false"));
+              e.currentTarget.setAttribute("data-active", "true");
+            }}
+          >
+            Users
+          </button>
+          <button
+            className="px-3 py-1 rounded-md border data-[active=true]:bg-primary data-[active=true]:text-background"
+            data-active={false}
+            onClick={(e) => {
+              const container =
+                (e.currentTarget.closest("main") as HTMLElement) ||
+                document.body;
+              container
+                .querySelectorAll("[data-users-tab]")
+                .forEach((el) => el.setAttribute("hidden", "hidden"));
+              container
+                .querySelector("[data-users-tab=invites]")
+                ?.removeAttribute("hidden");
+              container
+                .querySelectorAll("button[data-active]")
+                .forEach((btn) => btn.setAttribute("data-active", "false"));
+              e.currentTarget.setAttribute("data-active", "true");
+            }}
+          >
+            Invites
+          </button>
+        </div>
+        <div data-users-tab="users">
+          <UserManagementTable />
+        </div>
+        <div data-users-tab="invites" hidden>
+          <InvitationsTable />
+        </div>
+      </div>
     </main>
   );
 }

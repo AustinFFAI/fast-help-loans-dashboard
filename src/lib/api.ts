@@ -49,6 +49,16 @@ export type LenderProfileUpdate = {
   max_ltv?: number;
 };
 
+export type Invitation = {
+  id: number;
+  email: string;
+  role: "admin" | "loan_officer";
+  accepted: boolean;
+  expires_at: string | null;
+  created_at: string;
+  updated_at: string;
+};
+
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
 async function getIdToken(currentUser: FirebaseUser): Promise<string> {
@@ -246,6 +256,17 @@ export async function resendInvitation(
   if (!res.ok) {
     const msg = await safeError(res);
     throw new Error(msg || `Resend invitation failed: ${res.status}`);
+  }
+  return res.json();
+}
+
+export async function listInvitations(
+  currentUser: FirebaseUser,
+): Promise<Invitation[]> {
+  const res = await authorizedFetch(currentUser, "/auth/invitations");
+  if (!res.ok) {
+    const msg = await safeError(res);
+    throw new Error(msg || `List invitations failed: ${res.status}`);
   }
   return res.json();
 }
