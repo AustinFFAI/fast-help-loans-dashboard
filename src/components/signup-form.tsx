@@ -5,29 +5,55 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useAuth } from "@/lib/auth-context";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentProps<"form">) {
-  const { signUpWithEmail, signInWithGoogle } = useAuth();
+  const { signUpWithEmail } = useAuth();
   const router = useRouter();
+  const search = useSearchParams();
+  const invite = search.get("invite");
+  const emailFromQuery = search.get("email") || "";
+
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(emailFromQuery);
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+
+  const validatePasswordMatch = (pwd: string, confirmPwd: string) => {
+    if (confirmPwd && pwd !== confirmPwd) {
+      setPasswordError("Passwords do not match");
+    } else {
+      setPasswordError(null);
+    }
+  };
 
   async function handleEmailSignup(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
+    setPasswordError(null);
+    // Validate password confirmation before submission
+    if (password !== confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
     setSubmitting(true);
     try {
-      await signUpWithEmail(email, password, firstName, lastName);
-      router.push("/lender-profile");
+      await signUpWithEmail(
+        email,
+        password,
+        firstName,
+        lastName,
+        invite || undefined,
+      );
+      router.push("/");
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : "Failed to sign up");
     } finally {
@@ -35,20 +61,20 @@ export function SignupForm({
     }
   }
 
-  async function handleGoogleSignup() {
-    setError(null);
-    setSubmitting(true);
-    try {
-      await signInWithGoogle();
-      router.push("/lender-profile");
-    } catch (err: unknown) {
-      setError(
-        err instanceof Error ? err.message : "Failed to sign in with Google",
-      );
-    } finally {
-      setSubmitting(false);
-    }
-  }
+  // async function handleGoogleSignup() {
+  //   setError(null);
+  //   setSubmitting(true);
+  //   try {
+  //     await signInWithGoogle();
+  //     router.push("/lender-profile");
+  //   } catch (err: unknown) {
+  //     setError(
+  //       err instanceof Error ? err.message : "Failed to sign in with Google",
+  //     );
+  //   } finally {
+  //     setSubmitting(false);
+  //   }
+  // }
 
   return (
     <form
@@ -95,6 +121,7 @@ export function SignupForm({
             placeholder="m@example.com"
             required
             value={email}
+            disabled={!!invite}
             onChange={(e) => setEmail(e.target.value)}
           />
         </div>
@@ -107,10 +134,49 @@ export function SignupForm({
             type="password"
             required
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              const newPassword = e.target.value;
+              setPassword(newPassword);
+              validatePasswordMatch(newPassword, confirmPassword);
+            }}
           />
         </div>
-        <Button type="submit" className="w-full" disabled={submitting}>
+        <div className="grid gap-3">
+          <div className="flex items-center">
+            <Label htmlFor="confirmPassword">Confirm Password</Label>
+          </div>
+          <Input
+            id="confirmPassword"
+            type="password"
+            required
+            value={confirmPassword}
+            onChange={(e) => {
+              const newConfirmPassword = e.target.value;
+              setConfirmPassword(newConfirmPassword);
+              validatePasswordMatch(password, newConfirmPassword);
+            }}
+            aria-describedby={passwordError ? "password-error" : undefined}
+            aria-invalid={!!passwordError}
+          />
+          {passwordError && (
+            <p
+              id="password-error"
+              className="text-sm text-red-600"
+              role="alert"
+            >
+              {passwordError}
+            </p>
+          )}
+        </div>
+        <Button
+          type="submit"
+          className="w-full"
+          disabled={
+            submitting ||
+            !!passwordError ||
+            (password !== confirmPassword && confirmPassword !== "")
+          }
+        >
           Sign up
         </Button>
         {/* <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">

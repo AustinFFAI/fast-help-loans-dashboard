@@ -1,6 +1,6 @@
 import { Spinner } from "@/components/ui/loading-spinner";
 
-export default function LoadingApplications() {
+export default function LoadingProtected() {
   return (
     <div
       className="min-h-screen p-8 pb-20 sm:p-20 font-sans grid place-items-center"

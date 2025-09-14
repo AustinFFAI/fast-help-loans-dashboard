@@ -50,8 +50,8 @@ export function DataTable<TData, TValue>({
   const hasRows = table.getRowModel().rows?.length > 0;
 
   return (
-    <div className="overflow-hidden rounded-md border">
-      <Table className={hasRows ? "w-auto" : "w-full"}>
+    <div className="overflow-x-auto rounded-md border w-full">
+      <Table className={hasRows ? "min-w-[720px]" : "w-full min-w-[720px]"}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>

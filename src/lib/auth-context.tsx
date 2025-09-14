@@ -29,6 +29,7 @@ type AuthContextValue = {
     password: string,
     firstName: string,
     lastName: string,
+    inviteToken?: string,
   ) => Promise<void>;
   signOutUser: () => Promise<void>;
 };
@@ -48,6 +49,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState<boolean>(true);
   const [backendUser, setBackendUser] = useState<BackendUser | null>(null);
 
+  function isDeactivatedError(err: unknown): boolean {
+    return err instanceof Error && /deactivated/i.test(err.message);
+  }
+
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
       if (!firebaseUser) {
@@ -63,8 +68,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         let me = null as BackendUser | null;
         try {
           me = await getMe(firebaseUser);
-        } catch {
-          me = await provisionUser(firebaseUser);
+        } catch (err) {
+          if (isDeactivatedError(err)) {
+            await signOut(auth);
+            setUser(null);
+            setBackendUser(null);
+            return;
+          }
         }
         setBackendUser(me);
       } finally {
@@ -84,9 +94,15 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const me = await getMe(cred.user);
           setBackendUser(me);
-        } catch {
-          const me = await provisionUser(cred.user);
-          setBackendUser(me);
+        } catch (err) {
+          if (isDeactivatedError(err)) {
+            await signOut(auth);
+            setUser(null);
+            setBackendUser(null);
+            throw new Error(
+              "Your account is deactivated. Contact an administrator.",
+            );
+          }
         }
       },
       async signInWithGoogle() {
@@ -94,9 +110,29 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         try {
           const me = await getMe(cred.user);
           setBackendUser(me);
-        } catch {
-          const me = await provisionUser(cred.user);
-          setBackendUser(me);
+        } catch (err) {
+          if (isDeactivatedError(err)) {
+            await signOut(auth);
+            setUser(null);
+            setBackendUser(null);
+            throw new Error(
+              "Your account is deactivated. Contact an administrator.",
+            );
+          }
+          try {
+            const me = await provisionUser(cred.user);
+            setBackendUser(me);
+          } catch (err2) {
+            if (isDeactivatedError(err2)) {
+              await signOut(auth);
+              setUser(null);
+              setBackendUser(null);
+              throw new Error(
+                "Your account is deactivated. Contact an administrator.",
+              );
+            }
+            throw err2;
+          }
         }
       },
       async signUpWithEmail(
@@ -104,17 +140,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         password: string,
         firstName: string,
         lastName: string,
+        inviteToken?: string,
       ) {
         const cred = await createUserWithEmailAndPassword(
           auth,
           email,
-          password
+          password,
         );
         const me = await provisionUser(cred.user, {
           given_name: firstName,
           family_name: lastName,
           contact_name: `${firstName} ${lastName}`,
           contact_email: email,
+          invite: inviteToken ?? undefined,
         });
         setBackendUser(me);
       },
@@ -124,7 +162,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setBackendUser(null);
       },
     }),
-    [user, loading, backendUser]
+    [user, loading, backendUser],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
